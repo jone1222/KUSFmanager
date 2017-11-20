@@ -1,0 +1,42 @@
+CREATE TABLE IF NOT EXISTS User(
+	sid text PRIMARY KEY,
+	pw text,
+	name text
+);
+
+CREATE TABLE IF NOT EXISTS Item(
+	iName text PRIMARY KEY,
+	image text,
+	description text,
+	isAvailable boolean
+)
+
+CREATE TABLE IF NOT EXISTS Room(
+	rid int PRIMARY KEY,
+	rName text,
+	capacity int
+)
+
+CREATE TABLE IF NOT EXISTS Reservation(
+	sid text,
+	rid int,
+	r_date date,
+	sTime datetime,
+	eTime datetime,
+	waitNum int DEFAULT 1,
+	FOREIGN KEY(sid) REFERENCES User(sid),
+	FOREIGN KEY(rid) REFERENCES Room(rid),
+	PRIMARY KEY(sid, rid)
+)
+
+CREATE TABLE IF NOT EXISTS ItemInRoom(
+	rid int,
+	iName text,
+	FOREIGN KEY(rid) REFERENCES Room(rid),
+	FOREIGN KEY(iName) REFERENCES Item(iName),
+	PRIMARY KEY(rid, iName)
+)
+
+SELECT name FROM sqlite_master 
+WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'
+ORDER BY 1
