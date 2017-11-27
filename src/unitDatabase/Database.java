@@ -260,7 +260,7 @@ public class Database{
 		if(this.isOpened == false)
 			return false;
 		
-		String query = "SELECT * FROM User WHERE id='"+id+"' and pw='"+pw+"'";
+		String query = "SELECT * FROM User WHERE sid='"+id+"' and pw='"+pw+"'";
 		PreparedStatement prep = this.connection.prepareStatement(query);
 		ResultSet row = prep.executeQuery();
 		

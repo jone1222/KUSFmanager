@@ -32,5 +32,8 @@ public class Item {
 	public void setAvailable(boolean isAvailable) {
 		this.isAvailable = isAvailable;
 	}
-	
+	public String toString() {
+		String str = "Item// Name : "+this.iName+", Description : "+this.description+", isAvailable : "+this.isAvailable;
+		return str;
+	}
 }

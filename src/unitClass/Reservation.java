@@ -51,5 +51,10 @@ public class Reservation {
 		return eTime;
 	}
 	
+	public String toString() {
+		String str = "Reservation// reservID : "+this.reservID+", roomID : "+this.roomID+", Date : "+this.date+", Start Time : "+this.sTime+", End Time : "+this.eTime;
+		
+		return str;
+	}
 	
 }

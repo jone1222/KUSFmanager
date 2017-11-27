@@ -24,5 +24,8 @@ public class Room {
 	public int getCapacity() {
 		return capacity;
 	}
-
+	public String toString() {
+		String str = "Room// Name : "+this.rName+", Capacity : "+this.capacity;
+		return str;
+	}
 }

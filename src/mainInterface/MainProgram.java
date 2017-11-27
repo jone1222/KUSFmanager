@@ -112,16 +112,10 @@ public class MainProgram extends JFrame implements ActionListener {
 		Database DB = new Database();
 		DB.open();
 
-		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
-		Date date;
-		try {
-			date = sdf.parse("18:00");
-			System.out.println(date);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
+		String id = "jone1222";
+		String pw = "0540354";
+		
+		System.out.println(DB.checkOnLogin(id, pw));
 	}
 
 }

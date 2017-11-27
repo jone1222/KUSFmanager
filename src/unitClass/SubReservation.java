@@ -9,4 +9,11 @@ public class SubReservation extends Reservation{
 		super(reservId,rid,date,sTime,eTime);
 		this.waitNum = waitNum;
 	}
+	
+	public String toString() {
+		String str = super.toString();
+		str += ", WaitNumber : "+this.waitNum;
+		
+		return str;
+	}
 }
