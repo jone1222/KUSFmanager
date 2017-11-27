@@ -5,6 +5,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -23,12 +25,13 @@ public class MainProgram extends JFrame implements ActionListener {
 	CardLayout card;
 	JPanel card1, card2, card3,card4;
 	
+	Point pt;
+	JLabel label;
+	
 	public MainProgram() throws IOException {
 		frm = new JFrame();
 		Container c = frm.getContentPane();
-		
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-		//panel1 = new JPanel(); // 이거 대신 카드 레이아웃을 사용
 		panel2 = new JPanel();
 		
 		btn1 = new JButton("다음"); 
@@ -57,39 +60,46 @@ public class MainProgram extends JFrame implements ActionListener {
 		
 		card = new CardLayout();
 		panel1 = new JPanel(card);
-		
 		card1 = new JPanel(); 
 		card1.setLayout(null);
 		
 		BufferedImage img1 = ImageIO.read(new File("img\\floor1.jpg"));
 		JLabel floor1 = new JLabel(new ImageIcon(img1));
-		floor1.setSize(600, 600); floor1.setLocation(0, 0);
+		floor1.setSize(600, 600); floor1.setLocation(10, 0);
 		BufferedImage img2 = ImageIO.read(new File("img\\floor2.jpg"));
 		JLabel floor2 = new JLabel(new ImageIcon(img2));
-		floor2.setSize(600, 600); floor2.setLocation(650, 0);
+		floor2.setSize(600, 600); floor2.setLocation(620, 0);
+		
+		pt = new Point(0, 0);
+		label = new JLabel(pt.x+","+pt.y);
+		label.setSize(80, 40);
+		
 		card1.add(floor1);
 		card1.add(floor2);
+		card1.add(btn1);// 다음으로 눌러서 예약화면 넘어가기
+		card1.add(label);
+		card1.addMouseListener(new MyMAdapter());
 		
 		card2 = new JPanel();
 		card2.setLayout(null);
-		
+		card2.add(new roomPanel("img\\3d.png"));
+		card2.add(btn2); // 두번쨰  화면에서 버튼 되돌아가기
+		card2.add(btn3);// 두번쨰 화면에서 버튼 다음화면
 		
 		card3 = new JPanel();
 		card3.setLayout(null);
+		calendar cal = new calendar();
+		card3.add(cal);
+		card3.add(btn4);
+		card3.add(btn5);
+		
 		card4 = new JPanel();
 		card4.setLayout(null);
-		
-		card1.add(btn1);// 다음으로 눌러서 예약화면 넘어가기
-		card2.add(btn2); // 두번쨰  화면에서 버튼 되돌아가기
-		card2.add(btn3);// 두번쨰 화면에서 버튼 다음화면
 		
 		panel1.add("1",card1);
 		panel1.add("2",card2);
 		panel1.add("3",card3);
 		panel1.add("4",card4);
-
-		card3.add(btn4);
-		card3.add(btn5);
 		
 		tabbedPane.add("reserve", panel1);
 		tabbedPane.add("checkReserve", panel2);
@@ -124,6 +134,29 @@ public class MainProgram extends JFrame implements ActionListener {
 			card.show(panel1, "4");
 		}
 		
+	}
+	
+	class roomPanel extends JPanel { // 각각의 실습실 정보 
+		
+		public roomPanel(String imgSrc) throws IOException { // 이미지 경로 받아와서 분류
+			BufferedImage img = ImageIO.read(new File(imgSrc));
+			JLabel imgLabel = new JLabel(new ImageIcon(img));
+			imgLabel.setSize(img.getWidth(), img.getHeight());
+			imgLabel.setLocation(0, 0);
+			this.setSize(img.getWidth(), img.getHeight());
+			this.setVisible(true);
+		}
+	}
+	
+	class MyMAdapter extends MouseAdapter {
+		
+		@Override
+		public void mouseClicked(MouseEvent e) {
+			// TODO Auto-generated method stub
+			super.mouseClicked(e);
+			pt = e.getPoint();
+			label.setText(pt.x+","+pt.y);
+		}
 	}
 	
 	public static void main(String[] args) throws SQLException, IOException {
