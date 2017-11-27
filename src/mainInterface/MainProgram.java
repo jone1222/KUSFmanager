@@ -5,7 +5,9 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;  
-//import unitDatabase.Database; 
+import java.util.*;
+import unitDatabase.Database; 
+import unitClass.*;
 
 public class MainProgram extends JFrame implements ActionListener {
 	private JButton btn1,btn2,btn3,btn4,btn5,btn6,btn7;
@@ -100,7 +102,18 @@ public class MainProgram extends JFrame implements ActionListener {
 	}
 
 	public static void main(String[] args) throws SQLException {
-
+		Database DB = new Database();
+		DB.open();
+		ArrayList<User> users = DB.getAllUsers();
+		
+		System.out.println("=====");
+		System.out.println(users.size());
+		for(int i= 0 ; i < users.size(); i++) {
+			System.out.println(users.get(i).getname());
+		}
+		
+				
+				
 		new MainProgram();
 	}
 

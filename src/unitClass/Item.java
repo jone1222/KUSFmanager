@@ -7,10 +7,13 @@ public class Item {
 	boolean isAvailable;
 	
 	public Item(String iName, String image, String description) {
+		this(iName, image, description, true);
+	}
+	public Item(String iName, String image, String description,boolean isAvailable) {
 		this.iName = iName;
 		this.image = image;
 		this.description = description;
-		this.isAvailable = true;
+		this.isAvailable = isAvailable;
 	}
 	
 	public String getiName() {

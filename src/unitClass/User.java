@@ -2,17 +2,17 @@ package unitClass;
 
 public class User {
 	
-	private int sid;
+	private String sid;
 	private String pw;
 	private String name;
 	
-	public User(int sid, String pw, String name) {
+	public User(String sid, String pw, String name) {
 		this.sid = sid;
 		this.pw = pw;
 		this.name = name;
 	}
 	
-	public int getsid() {
+	public String getsid() {
 		return sid;
 	}
 	public String getname() {
@@ -22,7 +22,7 @@ public class User {
 		return pw;
 	}
 
-	public void setsid(int sid) {
+	public void setsid(String sid) {
 		this.sid = sid;
 	}
 	public void setpw(String pw) {

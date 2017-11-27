@@ -7,25 +7,16 @@ public class Room {
 	private int rid;
 	private String rName;
 	private int capacity;
-	private ArrayList<Reservation> reservations;
-	private ArrayList<Item> items;
 	
-	public Room(int rid) {
+	public Room(int rid,String rName,int capacity) {
 		this.rid = rid;
-		reservations = new ArrayList<>();
-		items = new ArrayList<>();
+		this.rName = rName;
+		this.capacity = capacity;
 	}
 	
 	public int getRid() {
 		return rid;
 	}
-	public ArrayList<Reservation> getReservations() {
-		return reservations;
-	}
-	public ArrayList<Item> getItems() {
-		return items;
-	}
-
 	public String getrName() {
 		return rName;
 	}

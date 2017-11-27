@@ -10,6 +10,13 @@ public class Reservation {
 	private Date sTime;
 	private Date eTime;
 	
+	public Reservation(ArrayList<User> users, Room room, Date date, Date sTime, Date eTime){
+		this.users = users;
+		this.room = room;
+		this.date = date;
+		this.sTime = sTime;
+		this.eTime = eTime;
+	}
 	
 	public ArrayList<User> getUsers() {
 		return users;
