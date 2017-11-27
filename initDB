@@ -18,16 +18,19 @@ CREATE TABLE IF NOT EXISTS Room(
 )
 
 CREATE TABLE IF NOT EXISTS Reservation(
-	sid text,
+	reservId INTEGER PRIMARY KEY AUTOINCREMENT,
 	rid int,
 	r_date date,
 	sTime datetime,
 	eTime datetime,
 	waitNum int DEFAULT 1,
-	FOREIGN KEY(sid) REFERENCES User(sid),
-	FOREIGN KEY(rid) REFERENCES Room(rid),
-	PRIMARY KEY(sid, rid)
-)
+	FOREIGN KEY(rid) REFERENCES Room(rid)
+);
+
+INSERT INTO Reservation VALUES(1,1,'2017-11-26','18:00','19:00',1);
+SELECT * FROM Reservation WHERE r_date='2017-11-26' and ( (sTime between '15:00' and '19:00') or (eTime between '15:00' and '19:00') ); 
+SELECT * FROM Reservation;
+DELETE FROM Reservation;
 
 CREATE TABLE IF NOT EXISTS ItemInRoom(
 	rid int,
@@ -40,3 +43,39 @@ CREATE TABLE IF NOT EXISTS ItemInRoom(
 SELECT name FROM sqlite_master 
 WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'
 ORDER BY 1
+
+
+INSERT INTO User VALUES ('jone1222','0540354','전석규1');
+INSERT INTO User VALUES ('jone9312','12341234','전석규2');
+INSERT INTO User VALUES ('jone6868','56785678','전석규3');
+
+
+INSERT INTO Room VALUES (1,'설게실01',8);
+INSERT INTO Room VALUES (2,'설게실02',8);
+INSERT INTO Room VALUES (3,'설게실03',8);
+
+INSERT INTO Item VALUES ('Cubicon Lux','image\\CubiconLux.jpg','3D프린터','TRUE');
+INSERT INTO Item VALUES ('회의용 모니터','image\\Monitor.jpg','회의용 모니터 입니다','TRUE');
+INSERT INTO Item VALUES ('프레젠테이션','image\\Presentation.jpg','회의용 프레젠테이션 입니다','TRUE');
+
+DELETE FROM ItemInRoom;
+INSERT INTO ItemInRoom VALUES ('1','회의용 모니터');
+INSERT INTO ItemInRoom VALUES ('1','프레젠테이션');
+
+SELECT * FROM Room;
+SELECT Item.iName,Item.Image,Item.description,Item.isAvailable FROM ItemInRoom,Room,Item WHERE rName='설게실01' and ItemInRoom.rid=Room.rid and Item.iName = ItemInRoom.iName;
+
+CREATE TABLE ReservedUser(
+	reservId int,
+	sid int,
+	FOREIGN KEY(reservId) REFERENCES Reservation(reservId),
+	FOREIGN KEY(sid) REFERENCES User(sid),
+	PRIMARY KEY(reservId, sid)
+);
+
+INSERT INTO Reservation(rid,r_date,sTime,eTime) VALUES(1,'2017-11-26','20:00','21:00');
+
+SELECT * FROM Reservation WHERE Reservation.r_date='2017-11-26'
+
+delete from Reservation;
+drop table Reservation;
