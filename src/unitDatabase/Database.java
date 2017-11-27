@@ -5,10 +5,10 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
 
 import org.sqlite.SQLiteConfig;
 import org.sqlite.SQLiteOpenMode;
@@ -17,9 +17,11 @@ import unitClass.Item;
 import unitClass.Reservation;
 import unitClass.Room;
 import unitClass.User;
-public class Database {
+public class Database{
 	public static String workingDir = System.getProperty("user.dir");
 	public final static String DATABASE = "\\db\\MySQLiteDB";
+	public final static int MAXIMUM_RESERVATION = 3;
+	
 	
 	private String dbFileName;
 	private boolean isOpened = false;
@@ -70,16 +72,6 @@ public class Database {
 			return false; 
 		} 
 		boolean result = false;  
-//		PreparedStatement prep = this.connection.prepareStatement(query); 
-//		String query = "SELECT * FROM media WHERE FilePath=? AND CheckSum=?;";
-//		prep.setString(1, filePath); 
-//		prep.setString(2, hashCode); 
-//		ResultSet row = prep.executeQuery(); 
-//		if(row.next()) { 
-//			row.getString(1);	// index 로 가져오기 
-//			row.getString("FileSize");	// field 이름으로 가져오기 
-//			result = true; 
-//		}
 		PreparedStatement prep = this.connection.prepareStatement("SELECT name FROM sqlite_master \r\n" + 
 				"WHERE type IN ('table','view') AND name NOT LIKE 'sqlite_%'\r\n" + 
 				"ORDER BY 1");
@@ -127,24 +119,49 @@ public class Database {
 		
 		return Items;
 	}
-	public boolean makeReservation( ArrayList<User> users,int rid,String date, String sTime,String eTime,String waitNum ) {
+	public boolean makeReservation( ArrayList<User> users,int rid,String date, String sTime,String eTime,String waitNum ) throws ParseException {
 		if(this.isOpened == false) {
 			return false;
 		}
 		try {
 			if(!findDuplicateReserv(date,sTime,eTime)) {
-				String query = "INSERT INTO Reservation(rid,r_date,sTime,eTime) VALUES("+rid+",'"+date+"','"+sTime+"','"+eTime+"')";
-				PreparedStatement prep = this.connection.prepareStatement(query);
-				prep.executeUpdate();
-				
-				//String reservId_query = "SELECT reservId FROM Reservation WHERE rid="+rid+" and r_date='"+date+"' and sTime="
-				
-				return true;
+				if(checkReservationConstraint(users)) {
+					//INSERT INTO Reservation
+					String query = "INSERT INTO Reservation(rid,r_date,sTime,eTime) VALUES("+rid+",'"+date+"','"+sTime+"','"+eTime+"')";
+					PreparedStatement prep = this.connection.prepareStatement(query,Statement.RETURN_GENERATED_KEYS);
+					prep.executeUpdate();
+					
+					//INSERT INTO ReservedUser
+					try(ResultSet generatedKeys = prep.getGeneratedKeys()) {
+						if(generatedKeys.next()) {
+							for(int i = 0 ; i < users.size(); i++) {
+								String user_query = "INSERT INTO ReservedUser VALUES("+generatedKeys.getInt(1)+","+users.get(i).getsid()+")";
+								PreparedStatement user_prep = this.connection.prepareStatement(user_query);
+								user_prep.executeUpdate();
+							}
+						}						
+						return true;
+					}
+					
+				}
 			}
 		}catch(SQLException e) {
-			return false;
+			e.printStackTrace();
 		}
 		return false;
+	}
+	public boolean checkReservationConstraint(ArrayList<User> u_list) throws SQLException, ParseException {
+		for(int i = 0 ; i < u_list.size(); i++) {
+			if(getReserveByUser(u_list.get(i)).size() >= MAXIMUM_RESERVATION)
+				return false;
+		}
+		return true;
+	}
+	public boolean checkReservationConstraint(User u) throws SQLException, ParseException {
+		if(getReserveByUser(u).size() >= MAXIMUM_RESERVATION)
+			return false;
+				
+		return true;
 	}
 	public boolean findDuplicateReserv(String r_date, String sTime, String eTime) throws SQLException{
 		if(this.isOpened == false) {
@@ -174,24 +191,10 @@ public class Database {
 		
 		ResultSet row = reserve_prep.executeQuery();
 		
-		while(row.next()) {
-			int rid = row.getInt(1);
-			
-			String user_query ="SELECT sid FROM ReservedUser WHERE rid='"+rid+"'";
-			PreparedStatement user_prep = this.connection.prepareStatement(user_query);
-			
-			ResultSet user_row = user_prep.executeQuery();
-			ArrayList<User> users = new ArrayList<>();
-			
-			while(user_row.next()) {
-				users.add(findUserById(user_row.getString(1)));
-			}
-			SimpleDateFormat sdf_date = new SimpleDateFormat("yyyy-MM-dd");
-			SimpleDateFormat sdf_time = new SimpleDateFormat("hh:mm");
-			
+		while(row.next()) {			
 			Reservation_list.add(
 					new Reservation(
-							users, findRoomById(row.getInt(2)), sdf_date.parse(row.getString(3)), sdf_time.parse(row.getString(4)), sdf_time.parse(row.getString(5))
+							row.getInt(1),row.getInt(2), row.getString(3),row.getString(4),row.getString(5)
 							)
 					);
 		}
@@ -206,24 +209,10 @@ public class Database {
 		
 		ResultSet row = reserve_prep.executeQuery();
 		
-		while(row.next()) {
-			int reservId = row.getInt(1);
-			
-			String user_query ="SELECT sid FROM ReservedUser WHERE reservId='"+reservId+"'";
-			PreparedStatement user_prep = this.connection.prepareStatement(user_query);
-			
-			ResultSet user_row = user_prep.executeQuery();
-			ArrayList<User> users = new ArrayList<>();
-			
-			while(user_row.next()) {
-				users.add(findUserById(user_row.getString(1)));
-			}
-			SimpleDateFormat sdf_date = new SimpleDateFormat("yyyy-MM-dd");
-			SimpleDateFormat sdf_time = new SimpleDateFormat("hh:mm");
-			
+		while(row.next()) {	
 			Reservation_list.add(
 					new Reservation(
-							users, findRoomById(roomID), sdf_date.parse(row.getString(3)), sdf_time.parse(row.getString(4)), sdf_time.parse(row.getString(5))
+							row.getInt(1),row.getInt(2), row.getString(3),row.getString(4),row.getString(5)
 							)
 					);
 		}
@@ -267,5 +256,17 @@ public class Database {
 		return room;
 	}
 
-
+	public boolean checkOnLogin(String id, String pw) throws SQLException{
+		if(this.isOpened == false)
+			return false;
+		
+		String query = "SELECT * FROM User WHERE id='"+id+"' and pw='"+pw+"'";
+		PreparedStatement prep = this.connection.prepareStatement(query);
+		ResultSet row = prep.executeQuery();
+		
+		if(row.next())
+			return true;
+		
+		return false;
+	}
 }

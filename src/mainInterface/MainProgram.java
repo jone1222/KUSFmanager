@@ -1,13 +1,20 @@
 package mainInterface;
 
-import javax.swing.*;
-import java.awt.*;
+import java.awt.CardLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.sql.SQLException;  
-import java.util.*;
-import unitDatabase.Database; 
-import unitClass.*;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTabbedPane;
+
+import unitDatabase.Database;
 
 public class MainProgram extends JFrame implements ActionListener {
 	private JButton btn1,btn2,btn3,btn4,btn5,btn6,btn7;
@@ -104,17 +111,17 @@ public class MainProgram extends JFrame implements ActionListener {
 	public static void main(String[] args) throws SQLException {
 		Database DB = new Database();
 		DB.open();
-		ArrayList<User> users = DB.getAllUsers();
-		
-		System.out.println("=====");
-		System.out.println(users.size());
-		for(int i= 0 ; i < users.size(); i++) {
-			System.out.println(users.get(i).getname());
+
+		SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+		Date date;
+		try {
+			date = sdf.parse("18:00");
+			System.out.println(date);
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
-		
-				
-				
-		new MainProgram();
+
 	}
 
 }

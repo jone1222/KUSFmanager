@@ -1,28 +1,45 @@
 package unitClass;
 
-import java.util.ArrayList;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import unitDatabase.Database;
+
 public class Reservation {
-	private ArrayList<User> users;
-	private Room room;
+	public static SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
+	public static SimpleDateFormat SDF_TIME = new SimpleDateFormat("hh:mm");
+
+	private int reservID;
+	private int roomID;
 	private Date date;
 	private Date sTime;
 	private Date eTime;
 	
-	public Reservation(ArrayList<User> users, Room room, Date date, Date sTime, Date eTime){
-		this.users = users;
-		this.room = room;
-		this.date = date;
-		this.sTime = sTime;
-		this.eTime = eTime;
+	public Reservation(int reservID,int rid, String date, String sTime, String eTime) throws ParseException{
+		this.reservID = reservID;
+		this.roomID = rid;
+		this.date = SDF_DATE.parse(date);
+		this.sTime = SDF_TIME.parse(sTime);
+		this.eTime = SDF_TIME.parse(eTime);
 	}
-	
-	public ArrayList<User> getUsers() {
-		return users;
+	public int getreservID() {
+		return this.reservID;
 	}
 	public Room getRoom() {
+		Database DB = new Database();
+		DB.open();
+		Room room = null;
+		try {
+			room = DB.findRoomById(this.roomID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
 		return room;
+	}
+	public int getroomID() {
+		return this.roomID;
 	}
 	public Date getDate() {
 		return date;

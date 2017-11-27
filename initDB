@@ -24,7 +24,7 @@ CREATE TABLE IF NOT EXISTS Reservation(
 	sTime datetime,
 	eTime datetime,
 	waitNum int DEFAULT 1,
-	FOREIGN KEY(rid) REFERENCES Room(rid)
+	FOREIGN KEY(rid) REFERENCES Room(rid) ON DELETE CASCADE
 );
 
 INSERT INTO Reservation VALUES(1,1,'2017-11-26','18:00','19:00',1);
@@ -35,8 +35,8 @@ DELETE FROM Reservation;
 CREATE TABLE IF NOT EXISTS ItemInRoom(
 	rid int,
 	iName text,
-	FOREIGN KEY(rid) REFERENCES Room(rid),
-	FOREIGN KEY(iName) REFERENCES Item(iName),
+	FOREIGN KEY(rid) REFERENCES Room(rid) ON DELETE CASCADE,
+	FOREIGN KEY(iName) REFERENCES Item(iName) ON DELETE CASCADE,
 	PRIMARY KEY(rid, iName)
 )
 
@@ -68,8 +68,8 @@ SELECT Item.iName,Item.Image,Item.description,Item.isAvailable FROM ItemInRoom,R
 CREATE TABLE ReservedUser(
 	reservId int,
 	sid int,
-	FOREIGN KEY(reservId) REFERENCES Reservation(reservId),
-	FOREIGN KEY(sid) REFERENCES User(sid),
+	FOREIGN KEY(reservId) REFERENCES Reservation(reservId) ON DELETE CASCADE,
+	FOREIGN KEY(sid) REFERENCES User(sid) ON DELETE CASCADE,
 	PRIMARY KEY(reservId, sid)
 );
 
@@ -79,3 +79,13 @@ SELECT * FROM Reservation WHERE Reservation.r_date='2017-11-26'
 
 delete from Reservation;
 drop table Reservation;
+drop table ReservedUser;
+drop table ItemInRoom;
+
+SELECT * FROM Reservation;
+SELECT * FROM User;
+SELECT * FROM Room;
+SELECT * FROM Item;
+SELECT * FROM ReservedUser;
+SELECT * FROM ItemInRoom;
+
