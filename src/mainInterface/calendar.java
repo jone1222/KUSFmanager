@@ -75,6 +75,8 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 	JFrame mainFrame;
 		//ImageIcon icon = new ImageIcon ( Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.png")));
 	
+	
+	
 	JPanel calOpPanel;
 		JButton todayBut;
 		JLabel todayLab;
@@ -103,10 +105,13 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		JButton clearBut;
 	
 	JPanel frameBottomPanel;
+	JPanel frameSubPanelEast;
+	JPanel frameSubPanelWest;
+	
 		JLabel bottomInfo = new JLabel("Welcome to Memo Calendar!");
 	//상수, 메세지
 	final String WEEK_DAY_NAME[] = { "SUN", "MON", "TUE", "WED", "THR", "FRI", "SAT" };
-	final String title = "메모 달력 ver 1.0";
+	final String title = "메머짱";
 	final String SaveButMsg1 = "를 MemoData폴더에 저장하였습니다.";
 	final String SaveButMsg2 = "메모를 먼저 작성해 주세요.";
 	final String SaveButMsg3 = "<html><font color=red>ERROR : 파일 쓰기 실패</html>";
@@ -121,8 +126,20 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 				new calendar();
 			}
 		});*/
-		new calendar();
+		// new calendar();
 	}
+	public JPanel getcal1(){
+		
+		return frameBottomPanel;
+	}
+public JPanel getcal2(){
+		
+		return frameSubPanelEast;
+	}
+public JPanel getcal3(){
+	
+	return frameSubPanelWest;
+}
 	public calendar(){ //구성요소 순으로 정렬되어 있음. 각 판넬 사이에 빈줄로 구별
 		
 		mainFrame = new JFrame(title);
@@ -293,7 +310,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 			memoPanel.add(memoSubPanel,BorderLayout.SOUTH);
 
 		//calOpPanel, calPanel을  frameSubPanelWest에 배치
-		JPanel frameSubPanelWest = new JPanel();
+		 frameSubPanelWest = new JPanel();
 		Dimension calOpPanelSize = calOpPanel.getPreferredSize();
 		calOpPanelSize.height = 90;
 		calOpPanel.setPreferredSize(calOpPanelSize);
@@ -302,7 +319,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		frameSubPanelWest.add(calPanel,BorderLayout.CENTER);
 
 		//infoPanel, memoPanel을  frameSubPanelEast에 배치
-		JPanel frameSubPanelEast = new JPanel();
+		 frameSubPanelEast = new JPanel();
 		Dimension infoPanelSize=infoPanel.getPreferredSize();
 		infoPanelSize.height = 65;
 		infoPanel.setPreferredSize(infoPanelSize);
