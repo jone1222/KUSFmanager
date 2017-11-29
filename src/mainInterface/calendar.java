@@ -1,8 +1,5 @@
 package mainInterface;
 
-
-//originally uploaded to http://blog.naver.com/azure0777
-
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

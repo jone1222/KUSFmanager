@@ -116,22 +116,17 @@ public class MainProgram extends JFrame implements ActionListener {
 		card3.add(btn5);
 		
 		card4 = new JPanel();
-		card4.setLayout(null);
+		card4.setLayout(new GridLayout(4,2));
 		
 		JLabel label2 = new JLabel("명 수 선택"); 
 		label2.setSize(200, 40); label2.setLocation(10, 0);
 		
 		JLabel label3 = new JLabel("학생 정보 입력"); 
-		label3.setSize(200, 40); label3.setLocation(10, 100);
+		label3.setSize(150,40);
+		label3.setLocation(10, 100);
 		
-		JLabel label4 = new JLabel("이름 : "); 
-		label4.setSize(150, 40); label4.setLocation(300, 0);
-		
-		JLabel label5 = new JLabel("학번 : "); 
-		label5.setSize(150, 40); label5.setLocation(300, 100);
-		
-		card4.add(label2); card4.add(label3); card4.add(label4); card4.add(label5);
-		card4.add(btn6); card4.add(btn7);
+		studentInfo std_info = new studentInfo(3);
+		card4.add(label2); 
 		
 		slider = new JSlider(JSlider.HORIZONTAL);
 		slider.setMaximum(10);
@@ -145,12 +140,21 @@ public class MainProgram extends JFrame implements ActionListener {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
-				
+				if(e.getSource() == slider) {
+					std_info.setNum(slider.getValue());
+				}
 			}
 			
 		});
 		slider.setBounds(100, 0, 300, 70);
 		card4.add(slider);
+		card4.add(label3);
+		card4.add(std_info.get_stdinfo());
+		
+		
+		
+		card4.add(btn6);
+		card4.add(btn7);
         
 		panel1.add("1",card1);
 		panel1.add("2",card2);
