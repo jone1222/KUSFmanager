@@ -116,7 +116,11 @@ public class MainProgram extends JFrame implements ActionListener {
 		card3.add(btn5);
 		
 		card4 = new JPanel();
-		card4.setLayout(new GridLayout(4,2));
+		card4.setLayout(new BorderLayout());
+		JPanel card4_1 = new JPanel(new GridLayout(2,2));
+		card4_1.setSize(50,50);
+		JPanel card4_2 = new JPanel(new FlowLayout());
+		card4_2.setSize(50,50);
 		
 		JLabel label2 = new JLabel("명 수 선택"); 
 		label2.setSize(200, 40); label2.setLocation(10, 0);
@@ -125,8 +129,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		label3.setSize(150,40);
 		label3.setLocation(10, 100);
 		
-		studentInfo std_info = new studentInfo(3);
-		card4.add(label2); 
+		card4_1.add(label2); 
 		
 		slider = new JSlider(JSlider.HORIZONTAL);
 		slider.setMaximum(10);
@@ -135,26 +138,42 @@ public class MainProgram extends JFrame implements ActionListener {
 		slider.setMajorTickSpacing(1);
 		slider.setPaintLabels(true); 
 		slider.setPaintTicks(true);
+		
+		slider.setBounds(100, 0, 300, 70);
+		card4_1.add(slider);
+		card4_1.add(label3);
+		JPanel card5 = new JPanel(new GridLayout(2,2));
+		card5.setSize(50, 50);
+		
+		studentInfo std_info = new studentInfo();
+		std_info.makePanel();
+		card5.removeAll();
+		card5.add(std_info.get_stdinfo());
+		card4_1.add(card5);
+		
 		slider.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
+				studentInfo std_info = null;
 				if(e.getSource() == slider) {
+					card5.removeAll();
+					std_info = new studentInfo();
+					//std_info.get_stdinfo().removeAll();
 					std_info.setNum(slider.getValue());
+					
+					card5.add(std_info.get_stdinfo());
+					card4_1.add(card5);
 				}
 			}
 			
 		});
-		slider.setBounds(100, 0, 300, 70);
-		card4.add(slider);
-		card4.add(label3);
-		card4.add(std_info.get_stdinfo());
 		
-		
-		
-		card4.add(btn6);
-		card4.add(btn7);
+		card4_2.add(btn6);
+		card4_2.add(btn7);
+		card4.add(card4_1, BorderLayout.CENTER);
+		card4.add(card4_2, BorderLayout.SOUTH);
         
 		panel1.add("1",card1);
 		panel1.add("2",card2);
