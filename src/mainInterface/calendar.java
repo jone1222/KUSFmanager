@@ -472,7 +472,7 @@ public JPanel getcal3(){
 						else{
 							msgCntFlag = false;
 							bottomInfo.setText(" ");
-						}
+						} //sdlfknsdflkn
 					}		
 				}
 				catch(InterruptedException e){
