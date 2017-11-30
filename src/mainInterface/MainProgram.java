@@ -33,9 +33,9 @@ public class MainProgram extends JFrame implements ActionListener {
 
 		btn1 = new JButton("다음");
 		btn1.addActionListener(this);
-		btn1.setBounds(1000, 650, 100, 20);
+		btn1.setBounds(1000, 650, 100, 20); // 이건 맨밑에 있는 항상 flow layout 있는거
 
-		btn2 = new JButton("이전");
+		btn2 = new JButton("이전"); // 이것도
 		btn2.addActionListener(this);
 		btn2.setBounds(900, 650, 100, 20);
 
@@ -44,41 +44,41 @@ public class MainProgram extends JFrame implements ActionListener {
 		panelCard = new JPanel(card);
 		panelFlow = new JPanel(new FlowLayout());
 		
-		panel1.add(panelCard, BorderLayout.CENTER);
+		panel1.add(panelCard, BorderLayout.CENTER); //  panelcard가에 card1, card2, card3, card4 가 있고 
+		// card 4개를 cardlayout으로 하나씩 교환해서 보여준다
 		panel1.add(panelFlow, BorderLayout.SOUTH);
 		
-		card1 = new JPanel(null);
-
-		BufferedImage img1 = ImageIO.read(new File("img\\floor1.jpg"));
-		JLabel floor1 = new JLabel(new ImageIcon(img1));
+		card1 = new JPanel(null); // 여기서 부터가 첫번쨰 화면
+		BufferedImage img1 = ImageIO.read(new File("img\\floor1.jpg")); // card1 에 이미지를 보여준다
+		JLabel floor1 = new JLabel(new ImageIcon(img1)); // 
 		floor1.setSize(600, 600);
 		floor1.setLocation(10, 0);
-		BufferedImage img2 = ImageIO.read(new File("img\\floor2.jpg"));
+		BufferedImage img2 = ImageIO.read(new File("img\\floor2.jpg")); // card1  에 이미지를 보여준다
 		JLabel floor2 = new JLabel(new ImageIcon(img2));
 		floor2.setSize(600, 600);
 		floor2.setLocation(620, 0);
-
 		pt = new Point(0, 0);
 		label1 = new JLabel(pt.x + "," + pt.y);
-		label1.setSize(80, 40);
-		
+		label1.setSize(80, 40);		
 		card1.add(label1);
 		card1.add(floor1);
 		card1.add(floor2);
 		panelFlow.add(btn2);// 다음으로 눌러서 예약화면 넘어가기
-		panelFlow.add(btn1);
-		
+		panelFlow.add(btn1);				
 		card1.addMouseListener(new MyMAdapter());
+		
 
-		JPanel p = new JPanel();
-		p.setSize(50, 50);
-		p.setBackground(Color.black);
-		p.setVisible(true);
-		p.setLayout(null);
-		p.setLocation(0, 0);
+       // ************************* card 2 시작
 
 		card2 = new JPanel();
-		card2.setLayout(new BorderLayout());		
+		card2.setLayout(new BorderLayout());	
+		
+		
+		
+		//************************* card 3 시작
+		
+		
+		
 		
 		card3 = new JPanel(new GridLayout(2, 1));
 		calendar cal = new calendar();
@@ -87,10 +87,22 @@ public class MainProgram extends JFrame implements ActionListener {
 		card3.add(cal.getcal2());
 		card3.add(cal.getcal1());
 		card3.add(cig.get_schedule());		
+		
+		
+		
+		
+		
+		
+		//*********************** card 4 시작		
+		
+		
+		
+		
+		
 
 		card4 = new JPanel(new GridLayout(2,1));
 		JPanel card4_1 = new JPanel(null);
-		card4_1.setSize(screenWidth/7,screenHeight/2);
+		card4_1.setSize(screenWidth/7,screenHeight/2); // 카드 4안에 명수 선택할 라벨 하나 밑에 학생정보 입력할 라벨을 gridlayout 으로 2대1로 구분
 		
 		
 		JLabel label2 = new JLabel("명 수 선택");
