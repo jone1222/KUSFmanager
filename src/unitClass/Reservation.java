@@ -10,19 +10,25 @@ import unitDatabase.Database;
 public class Reservation {
 	public static SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
 	public static SimpleDateFormat SDF_TIME = new SimpleDateFormat("hh:mm");
-
+	public static SimpleDateFormat SDF_ALL = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+	
 	private int reservID;
 	private int roomID;
 	private Date date;
 	private Date sTime;
 	private Date eTime;
 	
-	public Reservation(int reservID,int rid, String date, String sTime, String eTime) throws ParseException{
+	public Reservation(int reservID,int rid, String date, String sTime, String eTime){
 		this.reservID = reservID;
 		this.roomID = rid;
-		this.date = SDF_DATE.parse(date);
-		this.sTime = SDF_TIME.parse(sTime);
-		this.eTime = SDF_TIME.parse(eTime);
+		try {
+			this.date = SDF_DATE.parse(date);
+			this.sTime = SDF_ALL.parse(date+" "+sTime);
+			this.eTime = SDF_ALL.parse(date+" "+eTime);
+		} catch (ParseException e) {
+			e.printStackTrace();
+		}
+
 	}
 	public int getreservID() {
 		return this.reservID;

@@ -49,10 +49,10 @@ INSERT INTO User VALUES ('jone1222','0540354','전석규1');
 INSERT INTO User VALUES ('jone9312','12341234','전석규2');
 INSERT INTO User VALUES ('jone6868','56785678','전석규3');
 
-
-INSERT INTO Room VALUES (1,'설게실01',8);
-INSERT INTO Room VALUES (2,'설게실02',8);
-INSERT INTO Room VALUES (3,'설게실03',8);
+DELETE FROM Room;
+INSERT INTO Room VALUES (1,'설계실01',8);
+INSERT INTO Room VALUES (2,'설계실02',8);
+INSERT INTO Room VALUES (3,'설계실03',8);
 
 INSERT INTO Item VALUES ('Cubicon Lux','image\\CubiconLux.jpg','3D프린터','TRUE');
 INSERT INTO Item VALUES ('회의용 모니터','image\\Monitor.jpg','회의용 모니터 입니다','TRUE');
@@ -78,14 +78,19 @@ INSERT INTO Reservation(rid,r_date,sTime,eTime) VALUES(1,'2017-11-26','20:00','2
 SELECT * FROM Reservation WHERE Reservation.r_date='2017-11-26'
 
 delete from Reservation;
+delete from ReservedUser;
 drop table Reservation;
 drop table ReservedUser;
 drop table ItemInRoom;
 
 SELECT * FROM Reservation;
+SELECT * FROM ReservedUser;
+
 SELECT * FROM User;
 SELECT * FROM Room;
 SELECT * FROM Item;
-SELECT * FROM ReservedUser;
 SELECT * FROM ItemInRoom;
 
+SELECT * FROM Reservation WHERE r_date='2017-11-29' and ( (sTime > '15:00' and sTime < '18:00') or (eTime >  '15:00' and eTime < '18:00') )
+
+SELECT Reservation.reservId,Reservation.rid,Reservation.r_date,Reservation.sTime,Reservation.eTime,Reservation.waitNum FROM Reservation,ReservedUser WHERE ReservedUser.sid='jone1222' GROUP BY Reservation.reservID;

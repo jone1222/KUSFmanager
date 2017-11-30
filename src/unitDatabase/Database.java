@@ -119,7 +119,7 @@ public class Database{
 		
 		return Items;
 	}
-	public boolean makeReservation( ArrayList<User> users,int rid,String date, String sTime,String eTime,String waitNum ) throws ParseException {
+	public boolean makeReservation( ArrayList<User> users,int rid,String date, String sTime,String eTime,int waitNum ){
 		if(this.isOpened == false) {
 			return false;
 		}
@@ -135,7 +135,7 @@ public class Database{
 					try(ResultSet generatedKeys = prep.getGeneratedKeys()) {
 						if(generatedKeys.next()) {
 							for(int i = 0 ; i < users.size(); i++) {
-								String user_query = "INSERT INTO ReservedUser VALUES("+generatedKeys.getInt(1)+","+users.get(i).getsid()+")";
+								String user_query = "INSERT INTO ReservedUser VALUES("+generatedKeys.getInt(1)+",'"+users.get(i).getsid()+"')";
 								PreparedStatement user_prep = this.connection.prepareStatement(user_query);
 								user_prep.executeUpdate();
 							}
@@ -150,14 +150,14 @@ public class Database{
 		}
 		return false;
 	}
-	public boolean checkReservationConstraint(ArrayList<User> u_list) throws SQLException, ParseException {
+	public boolean checkReservationConstraint(ArrayList<User> u_list) throws SQLException {
 		for(int i = 0 ; i < u_list.size(); i++) {
 			if(getReserveByUser(u_list.get(i)).size() >= MAXIMUM_RESERVATION)
 				return false;
 		}
 		return true;
 	}
-	public boolean checkReservationConstraint(User u) throws SQLException, ParseException {
+	public boolean checkReservationConstraint(User u) throws SQLException {
 		if(getReserveByUser(u).size() >= MAXIMUM_RESERVATION)
 			return false;
 				
@@ -167,7 +167,7 @@ public class Database{
 		if(this.isOpened == false) {
 			return true;
 		}
-		String find_duplicates = "SELECT * FROM Reservation WHERE r_date='"+r_date+"' and ( (sTime between '"+sTime+"' and '"+eTime+"') or (eTime between '"+sTime+"' and '"+eTime+"') )";
+		String find_duplicates = "SELECT * FROM Reservation WHERE r_date='"+r_date+"' and ( (sTime > '"+sTime+"' and sTime < '"+eTime+"') or (eTime > '"+sTime+"' and eTime < '"+eTime+"') )";
 		PreparedStatement prep = this.connection.prepareStatement(find_duplicates);
 		
 		ResultSet row = prep.executeQuery();
@@ -180,13 +180,13 @@ public class Database{
 		
 	}
 	
-	public ArrayList<Reservation> getReserveByUser(User user) throws SQLException,ParseException{
+	public ArrayList<Reservation> getReserveByUser(User user) throws SQLException{
 		if(this.isOpened == false) {
 			return null; 
 		}
 		
 		ArrayList<Reservation> Reservation_list = new ArrayList<>();
-		String reserve_query = "SELECT Reservation.reservId,Reservation.rid,Reservation.r_date,Reservation.sTime,Reservation.eTime,Reservation.waitNum FROM Reservation,ReservedUser WHERE ReservedUser.sid='"+user.getsid()+"'";
+		String reserve_query = "SELECT Reservation.reservId,Reservation.rid,Reservation.r_date,Reservation.sTime,Reservation.eTime,Reservation.waitNum FROM Reservation,ReservedUser WHERE ReservedUser.sid='"+user.getsid()+"' GROUP BY Reservation.reservID";
 		PreparedStatement reserve_prep = this.connection.prepareStatement(reserve_query);
 		
 		ResultSet row = reserve_prep.executeQuery();
@@ -226,7 +226,7 @@ public class Database{
 			return null;
 		}
 		
-		String query = "SELECT name,pw FROM User WHERE sid = '"+sid+"'";
+		String query = "SELECT pw,name FROM User WHERE sid = '"+sid+"'";
 		PreparedStatement prep = this.connection.prepareStatement(query);
 		
 		ResultSet row = prep.executeQuery();
@@ -269,4 +269,36 @@ public class Database{
 		
 		return false;
 	}
+	public boolean isExistUser(String id) throws SQLException{
+		if(this.isOpened == false)
+			return false;
+		
+		String query = "SELECT * FROM User Where sid ='"+id+"'";
+		PreparedStatement prep = this.connection.prepareStatement(query);
+		ResultSet row = prep.executeQuery();
+		
+		if(row.next())
+			return true;
+		return false;
+	}
+	
+	public ArrayList<User> getUsersOfReservation(int ReservationID) throws SQLException{
+		ArrayList<User> user_list = new ArrayList<>();
+		
+		if(this.isOpened == false)
+			return user_list;
+		
+		String query = "SELECT sid FROM ReservedUser WHERE reservID = ?";
+		PreparedStatement prep = this.connection.prepareStatement(query);
+		prep.setInt(1, ReservationID);
+		
+		ResultSet row = prep.executeQuery();
+		
+		while(row.next()) {
+			user_list.add(findUserById(row.getString(1)));
+		}
+		
+		return user_list;
+	}
+
 }

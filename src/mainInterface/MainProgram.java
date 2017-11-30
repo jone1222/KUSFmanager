@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
+import java.util.*;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -15,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 
 import unitDatabase.Database;
+import unitClass.*;
+
 
 public class MainProgram extends JFrame implements ActionListener {
 	private JButton btn1,btn2,btn3,btn4,btn5,btn6,btn7;
@@ -108,14 +110,10 @@ public class MainProgram extends JFrame implements ActionListener {
 		
 	}
 
-	public static void main(String[] args) throws SQLException {
-		Database DB = new Database();
-		DB.open();
-
-		String id = "jone1222";
-		String pw = "0540354";
+	public static void main(String[] args) throws SQLException,ParseException {
 		
-		System.out.println(DB.checkOnLogin(id, pw));
+		
 	}
+	
 
 }
