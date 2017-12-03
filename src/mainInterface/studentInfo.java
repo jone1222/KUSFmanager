@@ -20,7 +20,6 @@ public class studentInfo extends JPanel{
 		show_stdinfo = new JPanel(new GridLayout(2, 2));
 		
 		JLabel label = new JLabel("¿Ã∏ß : "); 
-		
 		show_stdinfo.add(label);
 		
 		
