@@ -39,7 +39,6 @@ public class studentInfo extends JPanel{
 			show_stdinfo.add(textsid[i]);
 		}
 		
-		
 		show_stdinfo.repaint();
 	}
 	
