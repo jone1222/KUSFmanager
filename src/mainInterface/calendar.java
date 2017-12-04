@@ -20,6 +20,10 @@ class CalendarDataManager extends JPanel { // 6*7배열에 나타낼 달력 값을 구하는 
 	Calendar today = Calendar.getInstance();
 	Calendar cal;
 	
+	private String getTime[] = {"09:00 ~ 10:00", "10:00 ~ 11:00", "11:00 ~ 12:00", "12:00 ~ 13:00",
+			"13:00 ~ 14:00", "14:00 ~ 15:00", "15:00 ~ 16:00", "16:00 ~ 17:00"}; // 예약 시간 선택할 때 JComboBox로 사용
+	JComboBox<String> combo = new JComboBox<String>(getTime);
+	
 	public CalendarDataManager(){ 
 		setToday(); 
 	}
@@ -242,6 +246,18 @@ public JPanel getcal3(){
 			infoClock = new JLabel("", SwingConstants.RIGHT);
 			infoClock.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			infoPanel.add(infoClock, BorderLayout.NORTH);
+			combo.setSelectedIndex(0);
+			combo.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					String time = combo.getSelectedItem().toString();
+					int timeIndex = combo.getSelectedIndex();
+				}
+				
+			});
+			infoPanel.add(combo);
 			selectedDate = new JLabel("<Html><font size=3>"+(today.get(Calendar.MONTH)+1)+"/"+today.get(Calendar.DAY_OF_MONTH)+"/"+today.get(Calendar.YEAR)+"&nbsp;(Today)</html>", SwingConstants.LEFT);
 			selectedDate.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 						
@@ -263,6 +279,7 @@ public JPanel getcal3(){
 						
 						String memo = memoArea.getText();
 						if(memo.length()>0){
+							// ************ Save 누르면 날짜 받아오는 곳 ************
 							BufferedWriter out = new BufferedWriter(new FileWriter("MemoData/"+calYear+((calMonth+1)<10?"0":"")+(calMonth+1)+(calDayOfMon<10?"0":"")+calDayOfMon+".txt"));
 							String str = memoArea.getText();
 							out.write(str);  

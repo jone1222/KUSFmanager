@@ -11,9 +11,9 @@ import java.sql.SQLException;
 //import unitDatabase.Database; 
 
 public class MainProgram extends JFrame implements ActionListener {
-	int screenHeight;
-	int screenWidth;
-
+	private int screenHeight;
+	private int screenWidth;
+	
 	private JButton btn1, btn2;
 	private JFrame frm;
 	private JTabbedPane tabbedPane;
