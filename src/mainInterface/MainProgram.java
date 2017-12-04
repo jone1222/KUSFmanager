@@ -44,7 +44,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		panelCard = new JPanel(card);
 		panelFlow = new JPanel(new FlowLayout());
 		
-		panel1.add(panelCard, BorderLayout.CENTER); //  panelcard가에 card1, card2, card3, card4 가 있고 
+		panel1.add(panelCard, BorderLayout.CENTER); //panelcard가에 card1, card2, card3, card4 가 있고 
 		// card 4개를 cardlayout으로 하나씩 교환해서 보여준다
 		panel1.add(panelFlow, BorderLayout.SOUTH);
 		
@@ -159,9 +159,10 @@ public class MainProgram extends JFrame implements ActionListener {
 		panelCard.add("3", card3);
 		panelCard.add("4", card4);
 		
-
-		tabbedPane.add("reserve", panel1);
-		tabbedPane.add("checkReserve", panel2);
+		loginPage login = new loginPage();
+		tabbedPane.add("로그인", login.makePanel());
+		tabbedPane.add("예약하기", panel1);
+		tabbedPane.add("예약확인", panel2);
 
 		c.add(tabbedPane);
 		frm.setTitle("예약");

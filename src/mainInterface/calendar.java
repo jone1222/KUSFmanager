@@ -242,10 +242,23 @@ public JPanel getcal3(){
 			showCal(); // 달력을 표시
 						
 		infoPanel = new JPanel();
-			infoPanel.setLayout(new BorderLayout());
+			infoPanel.setLayout(new FlowLayout());
 			infoClock = new JLabel("", SwingConstants.RIGHT);
 			infoClock.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 			infoPanel.add(infoClock, BorderLayout.NORTH);
+			
+			JButton confirmTime = new JButton();
+			confirmTime.setText("시간 추가");
+			confirmTime.addActionListener(new ActionListener() {
+
+				@Override
+				public void actionPerformed(ActionEvent e) {
+					// TODO Auto-generated method stub
+					
+				}
+				
+			});
+			
 			combo.setSelectedIndex(0);
 			combo.addActionListener(new ActionListener() {
 
@@ -257,19 +270,20 @@ public JPanel getcal3(){
 				}
 				
 			});
-			infoPanel.add(combo);
+			infoPanel.add(combo); infoPanel.add(confirmTime);
 			selectedDate = new JLabel("<Html><font size=3>"+(today.get(Calendar.MONTH)+1)+"/"+today.get(Calendar.DAY_OF_MONTH)+"/"+today.get(Calendar.YEAR)+"&nbsp;(Today)</html>", SwingConstants.LEFT);
 			selectedDate.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 						
 		memoPanel=new JPanel();
-			memoPanel.setBorder(BorderFactory.createTitledBorder("Memo"));
+			//memoPanel.setBorder(BorderFactory.createTitledBorder("Memo"));
+			JLabel memoLabel = new JLabel();
 			memoArea = new JTextArea();
 			memoArea.setLineWrap(true);
 			memoArea.setWrapStyleWord(true);
 			memoAreaSP = new JScrollPane(memoArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			readMemo();
 			
-			memoSubPanel=new JPanel();
+		memoSubPanel=new JPanel();
 			saveBut = new JButton("Save"); 
 			saveBut.addActionListener(new ActionListener(){
 				public void actionPerformed(ActionEvent arg0) {
