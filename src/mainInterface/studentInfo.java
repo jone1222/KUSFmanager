@@ -5,8 +5,10 @@ import java.awt.*;
 import javax.swing.*;
 
 public class studentInfo extends JPanel{
-	JPanel show_stdinfo;
-	int stdNum;
+	private JPanel show_stdinfo;
+	private int stdNum;
+	private JTextField[] textsid;
+	private JTextField[] textName;
 	
 	public studentInfo() {
 		this(1);
@@ -23,14 +25,15 @@ public class studentInfo extends JPanel{
 		show_stdinfo.add(label);
 		
 		
-		JTextField[] textname = new JTextField[stdNum];
+		textName = new JTextField[stdNum];
 		for(int i=0; i<stdNum; i++) {
-			textname[i] = new JTextField(10);
-			show_stdinfo.add(textname[i]);
+			textName[i] = new JTextField(10);
+			show_stdinfo.add(textName[i]);
 		}
 		JLabel label2 = new JLabel("ÇÐ¹ø : "); 
 		show_stdinfo.add(label2);
-		JTextField[] textsid = new JTextField[stdNum];
+		textsid = new JTextField[stdNum];
+		
 		for(int i=0; i<stdNum; i++) {
 			textsid[i] = new JTextField(10);
 			show_stdinfo.add(textsid[i]);
@@ -48,4 +51,11 @@ public class studentInfo extends JPanel{
 	public JPanel get_stdinfo() {
 		return show_stdinfo;
 	}
+	public JTextField[] get_textsid() {
+		return textsid;
+	}
+	public JTextField[] get_textName() {
+		return textName;
+	}
+	
 }

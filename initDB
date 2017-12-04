@@ -60,7 +60,7 @@ INSERT INTO Item VALUES ('프레젠테이션','image\\Presentation.jpg','회의용 프레젠
 
 DELETE FROM ItemInRoom;
 INSERT INTO ItemInRoom VALUES ('1','회의용 모니터');
-INSERT INTO ItemInRoom VALUES ('1','프레젠테이션');
+INSERT INTO ItemInRoom VALUES ('1','빔 프로젝터');
 
 SELECT * FROM Room;
 SELECT Item.iName,Item.Image,Item.description,Item.isAvailable FROM ItemInRoom,Room,Item WHERE rName='설게실01' and ItemInRoom.rid=Room.rid and Item.iName = ItemInRoom.iName;
@@ -90,6 +90,12 @@ SELECT * FROM User;
 SELECT * FROM Room;
 SELECT * FROM Item;
 SELECT * FROM ItemInRoom;
+
+DELETE FROM Item;
+INSERT INTO Item VALUES('회의용 모니터','img\\Monitor.JPG','회의용 모니터 입니다.','TRUE');
+INSERT INTO Item VALUES('빔 프로젝터','img\\BeamProjector.jpg','회의용 빔 프로젝터 입니다.','TRUE')
+
+
 
 SELECT * FROM Reservation WHERE r_date='2017-11-29' and ( (sTime > '15:00' and sTime < '18:00') or (eTime >  '15:00' and eTime < '18:00') )
 

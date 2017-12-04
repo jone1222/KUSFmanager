@@ -122,7 +122,6 @@ public class Database {
 
 		while (row.next()) {
 			Items.add(new Item(row.getString(1), row.getString(2), row.getString(3), row.getBoolean(4)));
-			System.out.println(row.getString(1));
 		}
 
 		return Items;
@@ -296,6 +295,19 @@ public class Database {
 		return false;
 	}
 
+	public boolean isExistUser(String id,String name) throws SQLException {
+		if (this.isOpened == false)
+			return false;
+
+		String query = "SELECT * FROM User Where sid ='" + id + "' and name='"+name+"'";
+		PreparedStatement prep = this.connection.prepareStatement(query);
+		ResultSet row = prep.executeQuery();
+
+		if (row.next())
+			return true;
+		return false;
+	}
+	
 	public ArrayList<User> getUsersOfReservation(int ReservationID) throws SQLException {
 		ArrayList<User> user_list = new ArrayList<>();
 

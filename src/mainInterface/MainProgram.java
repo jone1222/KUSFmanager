@@ -1,13 +1,39 @@
 package mainInterface;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-import javax.swing.event.*;
-import java.awt.*;
-import java.awt.event.*;
+import java.awt.BorderLayout;
+import java.awt.CardLayout;
+import java.awt.Color;
+import java.awt.Component;
+import java.awt.Container;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.Point;
+import java.awt.Toolkit;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JSlider;
+import javax.swing.JTabbedPane;
+import javax.swing.JTextField;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
+
+import unitClass.Item;
 import unitDatabase.Database;
 
 public class MainProgram extends JFrame implements ActionListener {
@@ -31,11 +57,18 @@ public class MainProgram extends JFrame implements ActionListener {
 	private JLabel pointLabel;
 	private JSlider slider;
 
+	private JTextField[] id_textField;
+	private JTextField[] name_textField;
+	
+	
+	private Database DB;
+	
 	public MainProgram() throws IOException {
 		frm = new JFrame();
 		Container c = frm.getContentPane();
 		card = new CardLayout();
-
+		DB = new Database();
+		DB.open();
 
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 
@@ -68,19 +101,37 @@ public class MainProgram extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextBtn) {
+			if(getTopCard().equals("userCard")) {
+				for(int i = 0 ; i < id_textField.length; i++) {
+					try {
+						System.out.println(DB.isExistUser(id_textField[i].getText(),name_textField[i].getText()));
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
 			card.next(reservePanel);
+
 		} else if (e.getSource() == prevBtn) {
 			card.previous(reservePanel);
 		}
 	}
-
+	public String getTopCard() {
+		JPanel Card = null;
+		for(Component comp : reservePanel.getComponents()) {
+			if(comp.isVisible()== true) {
+				Card = (JPanel)comp;
+			}
+		}
+		return Card.getName();
+	}
 	public class roomPanel extends JPanel {
 
 		public roomPanel(String imgSrc) throws IOException {
 			BufferedImage img = ImageIO.read(new File(imgSrc));
 			JLabel imgLabel = new JLabel(new ImageIcon(img));
 			imgLabel.setSize(img.getWidth(), img.getHeight());
-			imgLabel.setLocation(0, 0);
+			//imgLabel.setLocation(0, 0);
 			this.setSize(img.getWidth(), img.getHeight());
 			this.setVisible(true);
 		}
@@ -94,6 +145,22 @@ public class MainProgram extends JFrame implements ActionListener {
 			super.mouseClicked(e);
 			pt = e.getPoint();
 			pointLabel.setText(pt.x + "," + pt.y);
+			
+			String roomName = "¼³°è½Ç01";
+			try{
+				ArrayList<Item> item_list = DB.getRoomItems(roomName);
+				roomCard.removeAll();
+				for(int i = 0 ; i < item_list.size(); i++) {
+					BufferedImage img = ImageIO.read(new File(item_list.get(i).getImage()));
+					Image dimg = img.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
+					JLabel imgLabel = new JLabel(new ImageIcon(dimg));
+					roomCard.add(imgLabel);
+				}
+			}catch(SQLException err) {
+				err.printStackTrace();
+			}catch(IOException err2) {
+				err2.printStackTrace();
+			}
 		}
 	}
 
@@ -124,12 +191,13 @@ public class MainProgram extends JFrame implements ActionListener {
 		pointLabel.setSize(80, 40);
 		mapCard.add(pointLabel);
 		mapCard.addMouseListener(new MyMAdapter());
-
+		mapCard.setName("mapCard");
 	}
 
 	void initRoomCard() {
 		roomCard = new JPanel();
-		roomCard.setLayout(new BorderLayout());
+		roomCard.setLayout(new FlowLayout(FlowLayout.LEADING,3,3));
+		roomCard.setName("roomCard");
 	}
 
 	void initTimeCard() {
@@ -143,6 +211,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		timeCard.add(cal.getcal3());
 		
 		timeCard.add(cig.get_schedule());
+		timeCard.setName("timeCard");
 	}
 
 	void initListCard() {
@@ -171,6 +240,9 @@ public class MainProgram extends JFrame implements ActionListener {
 		JPanel card4_2 = new JPanel(new BorderLayout());
 		studentInfo std_info = new studentInfo();
 		std_info.makePanel();
+		id_textField = std_info.get_textsid();
+		name_textField = std_info.get_textName();
+		
 		card4_2.removeAll();
 		card4_2.setBackground(Color.GREEN);
 
@@ -193,13 +265,16 @@ public class MainProgram extends JFrame implements ActionListener {
 					std_info = new studentInfo();
 					// std_info.get_stdinfo().removeAll();
 					std_info.setNum(slider.getValue());
-
+					id_textField = std_info.get_textsid();
+					name_textField = std_info.get_textName();
 					card4_2.add(std_info.get_stdinfo());
 					userlistCard.add(card4_2);
 				}
 			}
 
 		});
+		
+		userlistCard.setName("userCard");
 	}
 
 	void initReservePanel() {
