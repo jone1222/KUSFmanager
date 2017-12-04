@@ -329,9 +329,9 @@ public JPanel getcal3(){
 					bottomInfo.setText(ClrButMsg1);
 				}
 			});
-			memoSubPanel.add(saveBut);
-			memoSubPanel.add(delBut);
-			memoSubPanel.add(clearBut);
+			//memoSubPanel.add(saveBut);
+			//memoSubPanel.add(delBut);
+			//memoSubPanel.add(clearBut);
 			memoPanel.setLayout(new BorderLayout());
 			memoPanel.add(selectedDate, BorderLayout.NORTH);
 			memoPanel.add(memoAreaSP,BorderLayout.CENTER);

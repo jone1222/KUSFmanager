@@ -80,30 +80,28 @@ public class MainProgram extends JFrame implements ActionListener {
 		
 		
 		
-		card3 = new JPanel(new GridLayout(2, 1));
+		card3 = new JPanel(new GridLayout(3, 1));
+		JPanel card3_1 = new JPanel(new GridLayout(1,2));
+		JPanel card3_2 = new JPanel(new BorderLayout());
+		JPanel card3_3 = new JPanel(new GridLayout(2,1));
+		
 		calendar cal = new calendar();
 		ciganpyo cig = new ciganpyo();		
-		card3.add(cal.getcal3());
-		card3.add(cal.getcal2());
-		card3.add(cal.getcal1());
-		card3.add(cig.get_schedule());		
+		
+		card3_1.add(cal.getcal3());
+		card3_1.add(cal.getcal2());
+		card3_2.add(cig.get_schedule(), BorderLayout.CENTER);		
+		
+		card3.add(card3_1);
+		card3.add(card3_2);
 		
 		
-		
-		
-		
-		
-		//*********************** card 4 시작		
-		
-		
-		
-		
-		
+		//*********************** card 4 시작		-> 없앴오
 
-		card4 = new JPanel(new GridLayout(2,1));
+		//card4 = new JPanel(new GridLayout(2,1));
 		JPanel card4_1 = new JPanel(null);
-		card4_1.setSize(screenWidth/7,screenHeight/2); // 카드 4안에 명수 선택할 라벨 하나 밑에 학생정보 입력할 라벨을 gridlayout 으로 2대1로 구분
-		
+		card4_1.setSize(screenWidth/7,screenHeight/2); 
+		// 카드 4안에 명수 선택할 라벨 하나 밑에 학생정보 입력할 라벨을 gridlayout 으로 2대1로 구분
 		
 		JLabel label2 = new JLabel("명 수 선택");
 		label2.setSize(150, 40);
@@ -131,9 +129,6 @@ public class MainProgram extends JFrame implements ActionListener {
 		std_info.makePanel();
 		card4_2.removeAll();
 		card4_2.add(std_info.get_stdinfo());
-		
-		card4.add(card4_1);
-		card4.add(card4_2);
 
 		slider.addChangeListener(new ChangeListener() {
 
@@ -148,16 +143,20 @@ public class MainProgram extends JFrame implements ActionListener {
 					std_info.setNum(slider.getValue());
 
 					card4_2.add(std_info.get_stdinfo());
-					card4.add(card4_2);
+					card3_3.add(card4_2);
 				}
 			}
 
 		});
 		
+		card3_3.add(card4_1);
+		card3_3.add(card4_2);
+		card3.add(card3_3);
+		
 		panelCard.add("1", card1);
 		panelCard.add("2", card2);
 		panelCard.add("3", card3);
-		panelCard.add("4", card4);
+		//panelCard.add("4", card4);
 		
 		loginPage login = new loginPage();
 		tabbedPane.add("로그인", login.makePanel());
