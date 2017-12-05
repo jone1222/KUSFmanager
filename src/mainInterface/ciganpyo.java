@@ -11,7 +11,7 @@ public class ciganpyo extends JPanel {
 	JPanel show_schedule;
 	JTable table;
 	
-	public ciganpyo() {
+	public ciganpyo(calendar cal) {
 		String []a = {"09:00 ~ 10:00", "10:00 ~ 11:00", "11:00 ~ 12:00", "12:00 ~ 13:00",
 				"13:00 ~ 14:00", "14:00 ~ 15:00", "15:00 ~ 16:00", "16:00 ~ 17:00"};
 		String [][]b = {
@@ -27,8 +27,8 @@ public class ciganpyo extends JPanel {
 		for(int i = 0; i < 8; i++) {
 			String str = (String) model.getValueAt(0, i);
 			if(str.equals("0")) {
-				table.getColumnModel().getColumn(i).setCellRenderer(new TableCell());
-				table.getColumnModel().getColumn(i).setCellEditor(new TableCell());
+				table.getColumnModel().getColumn(i).setCellRenderer(new TableCell(cal));
+				table.getColumnModel().getColumn(i).setCellEditor(new TableCell(cal));
 			}
 		}
 
@@ -47,14 +47,35 @@ public class ciganpyo extends JPanel {
 		return show_schedule;
 	}
 
+	
 	class TableCell extends AbstractCellEditor implements TableCellEditor, TableCellRenderer {
 		JButton jb;
 		
-		public TableCell() {
+		public TableCell(calendar cal) {
+			
 			jb = new JButton("예약");
 			
 			jb.addActionListener(e -> { // 예약 버튼 클릭시 이벤트 처리하기 
-				System.out.println(table.getValueAt(table.getSelectedRow(), table.getSelectedColumn()));
+				int row = table.getSelectedRow();
+				int col = table.getSelectedColumn();
+				
+				System.out.print(row);
+				System.out.println(col);
+				
+				int userTime = cal.userTime;
+				System.out.println(userTime);
+				
+				boolean temp = true;
+				
+				for(int i = 0; i < userTime; i++) {
+					if(!table.getValueAt(row, col+i).equals("0"))// 이미 예약된 경우 예약 불가
+						temp = false;
+					System.out.println(table.getValueAt(row, col+i));
+				}
+				
+				if(temp == false) {
+					dialog dia = new dialog("시간 초과", "이미 예약된 시간입니다.\n다시 입력하세요.", "OK");
+				}
 			});
 		}
 		

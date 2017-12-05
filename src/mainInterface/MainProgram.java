@@ -24,6 +24,8 @@ public class MainProgram extends JFrame implements ActionListener {
 	private Point pt;
 	private JLabel label1;
 	private JSlider slider;
+	private ImageIcon bgImage; // 로그인 화면 이미지
+	public JLabel bglabel;
 
 	public MainProgram() throws IOException {
 		frm = new JFrame();
@@ -44,19 +46,33 @@ public class MainProgram extends JFrame implements ActionListener {
 		panelCard = new JPanel(card);
 		panelFlow = new JPanel(new FlowLayout());
 		
-		panel1.add(panelCard, BorderLayout.CENTER); //panelcard가에 card1, card2, card3, card4 가 있고 
+		panel1.add(panelCard, BorderLayout.CENTER); // panelcard가에 card1, card2, card3, card4 가 있고 
 		// card 4개를 cardlayout으로 하나씩 교환해서 보여준다
 		panel1.add(panelFlow, BorderLayout.SOUTH);
 		
-		card1 = new JPanel(null); // 여기서 부터가 첫번쨰 화면
+		bgImage = new ImageIcon("img/konkukuniv.jpg");
+		bglabel = new JLabel(bgImage);
+		
+		card1 = new JPanel();
+		
+		/*card1 = new JPanel() {
+				public void paintComponent(Graphics g) {
+					super.paintComponent(g);
+					g.drawImage(bgImage.getImage(), 0, 0, null);
+					//setOpaque(false);
+				}
+		};*/
+		
 		BufferedImage img1 = ImageIO.read(new File("img\\floor1.jpg")); // card1 에 이미지를 보여준다
 		JLabel floor1 = new JLabel(new ImageIcon(img1)); // 
 		floor1.setSize(600, 600);
 		floor1.setLocation(10, 0);
+		
 		BufferedImage img2 = ImageIO.read(new File("img\\floor2.jpg")); // card1  에 이미지를 보여준다
 		JLabel floor2 = new JLabel(new ImageIcon(img2));
 		floor2.setSize(600, 600);
 		floor2.setLocation(620, 0);
+		
 		pt = new Point(0, 0);
 		label1 = new JLabel(pt.x + "," + pt.y);
 		label1.setSize(80, 40);		
@@ -78,16 +94,14 @@ public class MainProgram extends JFrame implements ActionListener {
 		
 		//************************* card 3 시작
 		
-		
+		calendar cal = new calendar();
+		ciganpyo cig = new ciganpyo(cal);	
 		
 		card3 = new JPanel(new GridLayout(3, 1));
 		JPanel card3_1 = new JPanel(new GridLayout(1,2));
 		JPanel card3_2 = new JPanel(new BorderLayout());
 		JPanel card3_3 = new JPanel(new GridLayout(2,1));
-		
-		calendar cal = new calendar();
-		ciganpyo cig = new ciganpyo();		
-		
+
 		card3_1.add(cal.getcal3());
 		card3_1.add(cal.getcal2());
 		card3_2.add(cig.get_schedule(), BorderLayout.CENTER);		
@@ -155,6 +169,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		//panelCard.add("4", card4);
 		
 		loginPage login = new loginPage();
+		
 		tabbedPane.add("로그인", login.makePanel());
 		tabbedPane.add("예약하기", panel1);
 		
