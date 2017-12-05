@@ -52,7 +52,7 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	private CardLayout card;
 
-	private JPanel mapCard, roomCard, timeCard, userlistCard;
+	private JPanel mapCard, timeCard, userlistCard;
 
 	private JPanel reservePanel, btnPanel;
 
@@ -150,22 +150,6 @@ public class MainProgram extends JFrame implements ActionListener {
 			pt = ((Component)e.getSource()).getMousePosition();
 			if(pt != null)
 				pointLabel.setText(pt.x + "," + pt.y);
-			
-			String roomName = "¼³°è½Ç01";
-			try{
-				ArrayList<Item> item_list = DB.getRoomItems(roomName);
-				roomCard.removeAll();
-				for(int i = 0 ; i < item_list.size(); i++) {
-					BufferedImage img = ImageIO.read(new File(item_list.get(i).getImage()));
-					Image dimg = img.getScaledInstance(300, 300, Image.SCALE_SMOOTH);
-					JLabel imgLabel = new JLabel(new ImageIcon(dimg));
-					roomCard.add(imgLabel);
-				}
-			}catch(SQLException err) {
-				err.printStackTrace();
-			}catch(IOException err2) {
-				err2.printStackTrace();
-			}
 		}
 	}
 
@@ -213,12 +197,6 @@ public class MainProgram extends JFrame implements ActionListener {
 		mapCard.add(roomPanel);
 		//mapCard.addMouseListener(new MyMAdapter());
 		mapCard.setName("mapCard");
-	}
-
-	void initRoomCard() {
-		roomCard = new JPanel();
-		roomCard.setLayout(new FlowLayout(FlowLayout.LEADING,3,3));
-		roomCard.setName("roomCard");
 	}
 
 	void initTimeCard() {
@@ -304,9 +282,6 @@ public class MainProgram extends JFrame implements ActionListener {
 		// initialize Map Card
 		initMapCard();
 
-		// initialize Room Card
-		initRoomCard();
-
 		// initialize Time Card
 		initTimeCard();
 
@@ -314,7 +289,6 @@ public class MainProgram extends JFrame implements ActionListener {
 		initListCard();
 
 		reservePanel.add("1", mapCard);
-		reservePanel.add("2", roomCard);
 		reservePanel.add("3", timeCard);
 		reservePanel.add("4", userlistCard);
 

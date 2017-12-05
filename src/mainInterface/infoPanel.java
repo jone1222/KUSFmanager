@@ -4,6 +4,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.Image;
@@ -58,6 +59,8 @@ public class infoPanel extends JPanel{
 		roominfoPanel = new JPanel(new BorderLayout());
 		TextArea roominfo = new TextArea();
 		roominfo.setEditable(false);
+		Font ft = new Font("Arial", Font.BOLD, 12);
+		roominfo.setFont(ft);
 		roominfoPanel.add(roominfo,BorderLayout.CENTER);
 		roominfoPanel.setBorder(new TitledBorder(new LineBorder(Color.black, 2),"실습실 정보"));
 		
@@ -76,7 +79,7 @@ public class infoPanel extends JPanel{
 			for(int i = 0 ; i < items.size(); i++) {
 				Item item = items.get(i);
 				BufferedImage img = ImageIO.read(new File(item.getImage()));
-				Image dimg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+				Image dimg = img.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
 				/*
 				JLabel imgLabel = new JLabel(item.getiName(),new ImageIcon(dimg),JLabel.LEFT);
 				*/
@@ -103,12 +106,15 @@ public class infoPanel extends JPanel{
 		itemList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		itemList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
 		itemList.setVisibleRowCount(1);
+		//itemList.setFixedCellHeight(300);
 		itemList.setBorder(new TitledBorder(new LineBorder(Color.black, 2),"장비 목록"));
 		itemList.addListSelectionListener(new itemListSelectionListener());
 		
 		iteminfoPanel = new JPanel(new BorderLayout());
 		iteminfo = new TextArea();
 		iteminfo.setEditable(false);
+		iteminfo.setFont(ft);
+		
 		iteminfoPanel.add(iteminfo,BorderLayout.CENTER);
 		iteminfoPanel.setBorder(new TitledBorder(new LineBorder(Color.black, 2),"장비 설명"));
 		
@@ -142,6 +148,6 @@ public class infoPanel extends JPanel{
       gbl.setConstraints(c, gbc);
       
       add(c);
-}
+	}
 
 }
