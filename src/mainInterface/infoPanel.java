@@ -99,6 +99,7 @@ public class infoPanel extends JPanel{
 			e2.printStackTrace();
 		}
 		
+		DB.close();
 
 		itemList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		itemList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -142,6 +143,40 @@ public class infoPanel extends JPanel{
       gbl.setConstraints(c, gbc);
       
       add(c);
-}
+	}
+	public void updatelist(String roomName) {
+		Database DB = new Database();
+		DB.open();
+		try {
+			items = DB.getRoomItems(roomName);
+			Object[] panels = new Object[items.size()];
+			for(int i = 0 ; i < items.size(); i++) {
+				Item item = items.get(i);
+				BufferedImage img = ImageIO.read(new File(item.getImage()));
+				Image dimg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+				/*
+				JLabel imgLabel = new JLabel(item.getiName(),new ImageIcon(dimg),JLabel.LEFT);
+				*/
+				JLabel imgLabel = new JLabel(new ImageIcon(dimg));
+				imgLabel.setText("<html><span style='font-size:20px'>"+item.getiName()+"</span></html>");
+				imgLabel.setHorizontalTextPosition(JLabel.CENTER);
+				imgLabel.setVerticalTextPosition(JLabel.BOTTOM);
+				
+				JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+				
+				panel.add(imgLabel);
+				
+				panels[i] = panel;
+			}
+			itemList.setListData(panels);
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e2) {
+			e2.printStackTrace();
+		}
+		DB.close();
+		
+	}
 
 }
