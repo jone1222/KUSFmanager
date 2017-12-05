@@ -157,7 +157,9 @@ public class MainProgram extends JFrame implements ActionListener {
 		loginPage login = new loginPage();
 		tabbedPane.add("로그인", login.makePanel());
 		tabbedPane.add("예약하기", panel1);
-		tabbedPane.add("예약확인", panel2);
+		
+		checkReserve cr = new checkReserve();
+		tabbedPane.add("예약확인", cr.makePanel());
 
 		c.add(tabbedPane);
 		frm.setTitle("예약");
