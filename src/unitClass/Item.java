@@ -33,7 +33,7 @@ public class Item {
 		this.isAvailable = isAvailable;
 	}
 	public String toString() {
-		String str = "Item// Name : "+this.iName+", Description : "+this.description+", isAvailable : "+this.isAvailable;
-		return str;
+		//String str = "Item// Name : "+this.iName+", Description : "+this.description+", isAvailable : "+this.isAvailable;
+		return this.getiName();
 	}
 }

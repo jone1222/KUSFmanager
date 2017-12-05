@@ -27,9 +27,12 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.border.LineBorder;
+import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
@@ -81,7 +84,8 @@ public class MainProgram extends JFrame implements ActionListener {
 		
 		mainPanel.add(reservePanel, BorderLayout.CENTER);
 		mainPanel.add(btnPanel, BorderLayout.SOUTH);
-
+		
+		tabbedPane.add("login",new loginPage().makePanel());
 		tabbedPane.add("reserve", mainPanel);
 		tabbedPane.add("checkReserve", userPanel);
 
@@ -143,8 +147,9 @@ public class MainProgram extends JFrame implements ActionListener {
 		public void mouseClicked(MouseEvent e) {
 			// TODO Auto-generated method stub
 			super.mouseClicked(e);
-			pt = e.getPoint();
-			pointLabel.setText(pt.x + "," + pt.y);
+			pt = ((Component)e.getSource()).getMousePosition();
+			if(pt != null)
+				pointLabel.setText(pt.x + "," + pt.y);
 			
 			String roomName = "¼³°è½Ç01";
 			try{
@@ -165,23 +170,30 @@ public class MainProgram extends JFrame implements ActionListener {
 	}
 
 	void initMapCard() {
-		mapCard = new JPanel(null);
+		mapCard = new JPanel(new GridLayout(2,1));
+		JPanel mapPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+		mapPanel.setBackground(Color.WHITE);
+		JPanel roomPanel = new JPanel(new BorderLayout());
 		try {
 			BufferedImage img1 = ImageIO.read(new File("img\\floor1.jpg"));
+			//Image dimg = img1.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
 			JLabel floor1 = new JLabel(new ImageIcon(img1)); //
-			floor1.setSize(600, 600);
+			floor1.setSize(img1.getWidth(), img1.getHeight());
 			floor1.setLocation(10, 0);
-			mapCard.add(floor1);
+			floor1.addMouseListener(new MyMAdapter());
+			mapPanel.add(floor1);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 
 		try {
 			BufferedImage img2 = ImageIO.read(new File("img\\floor2.jpg"));
+			//Image dimg = img2.getScaledInstance(600, 600, Image.SCALE_SMOOTH);
 			JLabel floor2 = new JLabel(new ImageIcon(img2));
-			floor2.setSize(600, 600);
+			floor2.setSize(img2.getWidth(), img2.getHeight());
 			floor2.setLocation(620, 0);
-			mapCard.add(floor2);
+			floor2.addMouseListener(new MyMAdapter());
+			mapPanel.add(floor2);
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -189,8 +201,17 @@ public class MainProgram extends JFrame implements ActionListener {
 		pt = new Point(0, 0);
 		pointLabel = new JLabel(pt.x + "," + pt.y);
 		pointLabel.setSize(80, 40);
-		mapCard.add(pointLabel);
-		mapCard.addMouseListener(new MyMAdapter());
+		mapPanel.add(pointLabel);
+		
+		
+		roomPanel = new infoPanel();
+		//roomPanel.setSize(mapCard.getWidth(),mapCard.getHeight()/2-50);
+		
+		roomPanel.setBackground(Color.BLUE);
+		
+		mapCard.add(mapPanel);
+		mapCard.add(roomPanel);
+		//mapCard.addMouseListener(new MyMAdapter());
 		mapCard.setName("mapCard");
 	}
 
