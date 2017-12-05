@@ -120,6 +120,10 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 	final String DelButMsg2 = "작성되지 않았거나 이미 삭제된 memo입니다.";
 	final String DelButMsg3 = "<html><font color=red>ERROR : 파일 삭제 실패</html>";
 	final String ClrButMsg1 = "입력된 메모를 비웠습니다.";
+	
+	JPanel RepresentStd;
+	JTextField inputStdName;
+	JTextField inputStdNum;
 
 	public static void main(String[] args){
 		/*SwingUtilities.invokeLater(new Runnable(){
@@ -245,7 +249,7 @@ public JPanel getcal3(){
 			infoPanel.setLayout(new FlowLayout());
 			infoClock = new JLabel("", SwingConstants.RIGHT);
 			infoClock.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-			infoPanel.add(infoClock, BorderLayout.NORTH);
+			//infoPanel.add(infoClock, BorderLayout.NORTH);
 			
 			JButton confirmTime = new JButton();
 			confirmTime.setText("시간 추가");
@@ -270,7 +274,7 @@ public JPanel getcal3(){
 				}
 				
 			});
-			infoPanel.add(combo); infoPanel.add(confirmTime);
+			//infoPanel.add(combo); infoPanel.add(confirmTime); 콤보박스 없애버리기
 			selectedDate = new JLabel("<Html><font size=3>"+(today.get(Calendar.MONTH)+1)+"/"+today.get(Calendar.DAY_OF_MONTH)+"/"+today.get(Calendar.YEAR)+"&nbsp;(Today)</html>", SwingConstants.LEFT);
 			selectedDate.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 						
@@ -280,8 +284,20 @@ public JPanel getcal3(){
 			memoArea = new JTextArea();
 			memoArea.setLineWrap(true);
 			memoArea.setWrapStyleWord(true);
-			memoAreaSP = new JScrollPane(memoArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+			//memoAreaSP = new JScrollPane(memoArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			readMemo();
+			
+		RepresentStd = new JPanel(new GridLayout(2,2));
+			RepresentStd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+			JLabel label1 = new JLabel("대표자 이름 : ");
+			JLabel label2 = new JLabel("대표자 학번 : ");
+			inputStdName = new JTextField();
+			inputStdNum = new JTextField();
+			RepresentStd.add(label1);
+			RepresentStd.add(inputStdName);
+			RepresentStd.add(label2);
+			RepresentStd.add(inputStdNum);
+			memoAreaSP = new JScrollPane(RepresentStd, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 			
 		memoSubPanel=new JPanel();
 			saveBut = new JButton("Save"); 

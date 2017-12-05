@@ -70,13 +70,13 @@ public class MainProgram extends JFrame implements ActionListener {
 
        // ************************* card 2 시작
 
+		
 		card2 = new JPanel();
 		card2.setLayout(new BorderLayout());	
 		
 		
 		
 		//************************* card 3 시작
-		
 		
 		
 		
@@ -95,21 +95,16 @@ public class MainProgram extends JFrame implements ActionListener {
 		card3.add(card3_1);
 		card3.add(card3_2);
 		
-		
-		//*********************** card 4 시작		-> 없앴오
+		//*********************** card 4 시작		-> 없앴오 card3이랑 4합침
 
 		//card4 = new JPanel(new GridLayout(2,1));
 		JPanel card4_1 = new JPanel(null);
 		card4_1.setSize(screenWidth/7,screenHeight/2); 
 		// 카드 4안에 명수 선택할 라벨 하나 밑에 학생정보 입력할 라벨을 gridlayout 으로 2대1로 구분
 		
-		JLabel label2 = new JLabel("명 수 선택");
+		JLabel label2 = new JLabel("추가 학생 정보 입력");
 		label2.setSize(150, 40);
 		label2.setLocation(550, 10);
-
-		JLabel label3 = new JLabel("학생 정보 입력");
-		label3.setSize(150, 40);
-		label3.setLocation(550, 200);
 
 		slider = new JSlider(JSlider.HORIZONTAL);
 		slider.setMaximum(6);
@@ -121,7 +116,6 @@ public class MainProgram extends JFrame implements ActionListener {
 		slider.setBounds(150, 50, 900, 70);
 		
 		card4_1.add(label2);
-		card4_1.add(label3);
 		card4_1.add(slider);
 		
 		JPanel card4_2 = new JPanel();
@@ -129,7 +123,11 @@ public class MainProgram extends JFrame implements ActionListener {
 		std_info.makePanel();
 		card4_2.removeAll();
 		card4_2.add(std_info.get_stdinfo());
-
+		
+		card3_3.add(card4_1);
+		card3_3.add(card4_2);
+		card3.add(card3_3);
+		
 		slider.addChangeListener(new ChangeListener() {
 
 			@Override
@@ -137,21 +135,19 @@ public class MainProgram extends JFrame implements ActionListener {
 				// TODO Auto-generated method stub
 				studentInfo std_info = null;
 				if (e.getSource() == slider) {
+					card3_3.removeAll();
 					card4_2.removeAll();
 					std_info = new studentInfo();
 					// std_info.get_stdinfo().removeAll();
 					std_info.setNum(slider.getValue());
-
 					card4_2.add(std_info.get_stdinfo());
-					card3_3.add(card4_2);
+					card3_3.add(card4_1); // 슬라이더만
+					card3_3.add(card4_2); // 정보 입력받는 곳
+					card3.add(card3_3);   // 슬라이더랑 입력받는 곳 전체
 				}
 			}
 
 		});
-		
-		card3_3.add(card4_1);
-		card3_3.add(card4_2);
-		card3.add(card3_3);
 		
 		panelCard.add("1", card1);
 		panelCard.add("2", card2);
