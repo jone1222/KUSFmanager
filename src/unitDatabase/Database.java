@@ -295,11 +295,11 @@ public class Database {
 		return false;
 	}
 
-	public boolean isExistUser(String id,String name) throws SQLException {
+	public boolean isExistUser(String id, String name) throws SQLException {
 		if (this.isOpened == false)
 			return false;
 
-		String query = "SELECT * FROM User Where sid ='" + id + "' and name='"+name+"'";
+		String query = "SELECT * FROM User Where sid ='" + id + "' and name='" + name + "'";
 		PreparedStatement prep = this.connection.prepareStatement(query);
 		ResultSet row = prep.executeQuery();
 
@@ -307,7 +307,7 @@ public class Database {
 			return true;
 		return false;
 	}
-	
+
 	public ArrayList<User> getUsersOfReservation(int ReservationID) throws SQLException {
 		ArrayList<User> user_list = new ArrayList<>();
 
