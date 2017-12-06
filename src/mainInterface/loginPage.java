@@ -14,14 +14,30 @@ public class loginPage extends JPanel {
 	private JPanel loginPanel, subPanel1, subPanel2, subPanel3;
 	private JLabel id, pw, label;
 	private JTextField inputID, inputPW;
-
+	
+	private ImageIcon bgImage; // 로그인 화면 이미지
+	private JScrollPane scrollPane;
+	
 	public loginPage() throws IOException {
-		loginPanel = new JPanel(new BorderLayout(100,100));
-		loginPanel.setBorder(BorderFactory.createEmptyBorder(30, 300, 150, 300)); // 패널 내 상좌하우 순으로 여백
+		loginPanel = new JPanel(new BorderLayout(100,100)) {
+			public void paintComponent(Graphics g) {
+				g.drawImage(bgImage.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		scrollPane = new JScrollPane(loginPanel);
+		
+		loginPanel.setBorder(BorderFactory.createEmptyBorder(50, 420, 130, 420)); // 패널 내 상좌하우 순으로 여백
 		
 		subPanel1 = new JPanel(new FlowLayout());
+		subPanel1.setOpaque(false);
 		subPanel2 = new JPanel(new GridLayout(2,1));
+		subPanel2.setOpaque(false);
 		subPanel3 = new JPanel(new FlowLayout());
+		subPanel3.setOpaque(false);
+		
+		bgImage = new ImageIcon("img/konkukuniv.jpg");
 		
 		BufferedImage img1 = ImageIO.read(new File("img\\kuMark.jpg")); // card1 에 이미지를 보여준다
 		JLabel floor1 = new JLabel(new ImageIcon(img1)); 
@@ -66,8 +82,8 @@ public class loginPage extends JPanel {
 		loginPanel.add(subPanel3, BorderLayout.SOUTH);
 		//loginPanel.setBackground(Color.WHITE);
 	}
-	
-	public JPanel makePanel() {
-		return loginPanel;
+
+	public JScrollPane makePanel() {
+		return scrollPane;
 	}
 }
