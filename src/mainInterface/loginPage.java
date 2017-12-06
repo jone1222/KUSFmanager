@@ -3,6 +3,7 @@ package mainInterface;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,6 +21,7 @@ import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
 import unitDatabase.Database;
@@ -31,14 +33,30 @@ public class loginPage extends JPanel {
 	private JTextField inputID, inputPW;
 
 	private String login_id, login_pw;
+
+	private ImageIcon bgImage; // 로그인 화면 이미지
+	private JScrollPane scrollPane;
 	
 	public loginPage() throws IOException {
-		loginPanel = new JPanel(new BorderLayout(100,100));
-		loginPanel.setBorder(BorderFactory.createEmptyBorder(30, 300, 150, 300)); // 패널 내 상좌하우 순으로 여백
+		loginPanel = new JPanel(new BorderLayout(100,100)) {
+			public void paintComponent(Graphics g) {
+				g.drawImage(bgImage.getImage(), 0, 0, null);
+				setOpaque(false);
+				super.paintComponent(g);
+			}
+		};
+		scrollPane = new JScrollPane(loginPanel);
+		
+		loginPanel.setBorder(BorderFactory.createEmptyBorder(50, 420, 130, 420)); // 패널 내 상좌하우 순으로 여백
 		
 		subPanel1 = new JPanel(new FlowLayout());
+		subPanel1.setOpaque(false);
 		subPanel2 = new JPanel(new GridLayout(2,1));
+		subPanel2.setOpaque(false);
 		subPanel3 = new JPanel(new FlowLayout());
+		subPanel3.setOpaque(false);
+		
+		bgImage = new ImageIcon("img/konkukuniv.jpg");
 		
 		BufferedImage img1 = ImageIO.read(new File("img\\kuMark.jpg")); // card1 에 이미지를 보여준다
 		JLabel floor1 = new JLabel(new ImageIcon(img1)); 
@@ -108,9 +126,9 @@ public class loginPage extends JPanel {
 		loginPanel.add(subPanel3, BorderLayout.SOUTH);
 		//loginPanel.setBackground(Color.WHITE);
 	}
-	
-	public JPanel makePanel() {
-		return loginPanel;
+
+	public JScrollPane makePanel() {
+		return scrollPane;
 	}
 	public String[] getLoginUser() {
 		return new String[] {this.login_id,this.login_pw};
