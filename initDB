@@ -103,3 +103,17 @@ SELECT * FROM Reservation WHERE r_date='2017-11-29' and ( (sTime > '15:00' and s
 SELECT Reservation.reservId,Reservation.rid,Reservation.r_date,Reservation.sTime,Reservation.eTime,Reservation.waitNum FROM Reservation,ReservedUser WHERE ReservedUser.sid='jone1222' GROUP BY Reservation.reservID;
 
 SELECT rid from Room where rName = '설계실01';
+
+SELECT Reservation.* FROM Reservation,ReservedUser WHERE Reservation.reservId = ReservedUser.reservId and ReservedUser.sid='jone6868'
+SELECT * FROM Reservation;
+
+DELETE FROM Reservation WHERE reservId = 18;
+DELETE FROM ReservedUser WHERE reservId = 18;
+
+SELECT * FROM ReservedUser WHERE reservId = 15 or reservId = 16;
+
+ALTER TABLE Room ADD COLUMN Description text;
+
+SELECT * From Room;
+
+UPDATE Room SET Description = "다양한 프로젝트를 수행할 수 있는 실습실입니다.  발표를 위한 모니터와 빔 프로젝터가 구비되어 있습니다.  최대 7명의 인원이 수용 가능합니다." WHERE rName like '%설계실%'

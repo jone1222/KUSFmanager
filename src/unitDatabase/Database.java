@@ -215,8 +215,8 @@ public class Database {
 		}
 
 		ArrayList<Reservation> Reservation_list = new ArrayList<>();
-		String reserve_query = "SELECT Reservation.reservId,Reservation.rid,Reservation.r_date,Reservation.sTime,Reservation.eTime,Reservation.waitNum FROM Reservation,ReservedUser WHERE ReservedUser.sid='"
-				+ user.getsid() + "' GROUP BY Reservation.reservID";
+		String reserve_query = "SELECT Reservation.* FROM Reservation,ReservedUser WHERE Reservation.reservId = ReservedUser.reservId and ReservedUser.sid='"
+				+ user.getsid() + "'";
 		PreparedStatement reserve_prep = this.connection.prepareStatement(reserve_query);
 
 		ResultSet row = reserve_prep.executeQuery();
@@ -286,17 +286,36 @@ public class Database {
 			return null;
 		}
 
-		String query = "SELECT rName,capacity FROM Room WHERE rid = '" + rid + "'";
+		String query = "SELECT rName,capacity,Description FROM Room WHERE rid = '" + rid + "'";
 		PreparedStatement prep = this.connection.prepareStatement(query);
 
 		ResultSet row = prep.executeQuery();
 
 		while (row.next()) {
-			room = new Room(rid, row.getString(1), row.getInt(2));
+			room = new Room(rid, row.getString(1), row.getInt(2),row.getString(3));
 		}
 
 		return room;
 	}
+	public Room findRoomByName(String roomName) throws SQLException {
+		Room room = null;
+
+		if (this.isOpened == false) {
+			return null;
+		}
+
+		String query = "SELECT rid,capacity,Description FROM Room WHERE rName = '" + roomName + "'";
+		PreparedStatement prep = this.connection.prepareStatement(query);
+
+		ResultSet row = prep.executeQuery();
+
+		if (row.next()) {
+			room = new Room( row.getInt(1), roomName, row.getInt(2),row.getString(3));
+		}
+
+		return room;
+	}
+
 
 	public boolean checkOnLogin(String id, String pw) throws SQLException {
 		if (this.isOpened == false)

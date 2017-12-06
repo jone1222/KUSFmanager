@@ -21,6 +21,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -28,6 +29,7 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
 import unitClass.Item;
+import unitClass.Room;
 import unitDatabase.Database;
 
 public class infoPanel extends JPanel{
@@ -45,6 +47,10 @@ public class infoPanel extends JPanel{
 	
 	JList itemList;
 	
+	TextArea roominfo;
+	
+	boolean isChanging = false;
+	
 	public infoPanel() {
 		super();
 		init();
@@ -57,7 +63,7 @@ public class infoPanel extends JPanel{
 		this.setLayout(grid);
 	
 		roominfoPanel = new JPanel(new BorderLayout());
-		TextArea roominfo = new TextArea();
+		roominfo = new TextArea();
 		roominfo.setEditable(false);
 		Font ft = new Font("Arial", Font.BOLD, 12);
 		roominfo.setFont(ft);
@@ -70,39 +76,6 @@ public class infoPanel extends JPanel{
 		
 		itemList = new JList();
 		itemList.setCellRenderer(new RoomItemCustomRenderer());
-		Database DB = new Database();
-		DB.open();
-
-		try {
-			items = DB.getRoomItems("¼³°è½Ç01");
-			Object[] panels = new Object[items.size()];
-			for(int i = 0 ; i < items.size(); i++) {
-				Item item = items.get(i);
-				BufferedImage img = ImageIO.read(new File(item.getImage()));
-				Image dimg = img.getScaledInstance(150, 150, Image.SCALE_SMOOTH);
-				/*
-				JLabel imgLabel = new JLabel(item.getiName(),new ImageIcon(dimg),JLabel.LEFT);
-				*/
-				JLabel imgLabel = new JLabel(new ImageIcon(dimg));
-				imgLabel.setText("<html><span style='font-size:20px'>"+item.getiName()+"</span></html>");
-				imgLabel.setHorizontalTextPosition(JLabel.CENTER);
-				imgLabel.setVerticalTextPosition(JLabel.BOTTOM);
-				
-				JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-				
-				panel.add(imgLabel);
-				
-				panels[i] = panel;
-			}
-			itemList.setListData(panels);
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e2) {
-			e2.printStackTrace();
-		}
-		
-		DB.close();
 
 		itemList.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
 		itemList.setLayoutOrientation(JList.HORIZONTAL_WRAP);
@@ -131,9 +104,11 @@ public class infoPanel extends JPanel{
 		@Override
 		public void valueChanged(ListSelectionEvent arg0) {
 			// TODO Auto-generated method stub
-			if(!arg0.getValueIsAdjusting()) {
+			if(!arg0.getValueIsAdjusting() && !isChanging) {
 				int index = itemList.getSelectedIndex();
-				iteminfo.setText(items.get(index).getDescription());
+				Item item = items.get(index);
+				iteminfo.setText(item.getDescription());
+				
 			}
 		}
 		
@@ -154,7 +129,10 @@ public class infoPanel extends JPanel{
 	public void updatelist(String roomName) {
 		Database DB = new Database();
 		DB.open();
+		
+		Room room = null; 
 		try {
+			isChanging = true;
 			items = DB.getRoomItems(roomName);
 			Object[] panels = new Object[items.size()];
 			for(int i = 0 ; i < items.size(); i++) {
@@ -176,6 +154,11 @@ public class infoPanel extends JPanel{
 				panels[i] = panel;
 			}
 			itemList.setListData(panels);
+			
+			room = DB.findRoomByName(roomName);
+			String desc = room.getDescription();
+			roominfo.setText("");
+			roominfo.append(desc);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -183,7 +166,7 @@ public class infoPanel extends JPanel{
 			e2.printStackTrace();
 		}
 		DB.close();
-		
+		isChanging = false;
 	}
 
 }

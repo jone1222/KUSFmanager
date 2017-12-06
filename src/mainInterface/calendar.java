@@ -149,7 +149,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 
 	JPanel RepresentStd;
 	JTextField inputStdName;
-	JTextField inputStdNum;
+	JTextField inputStdRoom;
 
 	public int userTime;
 
@@ -319,13 +319,16 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		RepresentStd = new JPanel(new GridLayout(2, 2));
 		RepresentStd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		JLabel label1 = new JLabel("대표자 이름 : ");
-		JLabel label2 = new JLabel("대표자 학번 : ");
+		JLabel label2 = new JLabel("희망 실습실 : ");
 		inputStdName = new JTextField();
-		inputStdNum = new JTextField();
+		inputStdRoom = new JTextField();
+		inputStdName.setEnabled(false);
+		inputStdRoom.setEnabled(false);
+		
 		RepresentStd.add(label1);
 		RepresentStd.add(inputStdName);
 		RepresentStd.add(label2);
-		RepresentStd.add(inputStdNum);
+		RepresentStd.add(inputStdRoom);
 		memoAreaSP = new JScrollPane(RepresentStd, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
 				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
@@ -485,6 +488,11 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 					dateButs[i][j].setVisible(true);
 			}
 		}
+	}
+	
+	public void updateUserRoom(String userName, String roomName) {
+		this.inputStdRoom.setText(roomName);
+		this.inputStdName.setText(userName);
 	}
 
 	private class ListenForCalOpButtons implements ActionListener {

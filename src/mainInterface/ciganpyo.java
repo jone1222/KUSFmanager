@@ -34,7 +34,7 @@ public class ciganpyo extends JPanel {
 	String []a = {"09:00 ~ 10:00", "10:00 ~ 11:00", "11:00 ~ 12:00", "12:00 ~ 13:00",
 			"13:00 ~ 14:00", "14:00 ~ 15:00", "15:00 ~ 16:00", "16:00 ~ 17:00"};
 	String [][]b = {
-			{"0","0","0","0","0","0","0","0"}};
+			{"예약 가능","예약 가능","예약 가능","예약 가능","예약 가능","예약 가능","예약 가능","예약 가능"}};
 	
 	String today;
 	
@@ -81,7 +81,7 @@ public class ciganpyo extends JPanel {
 		/*
 		for(int i = 0; i < 8; i++) { // 예약 안된 부분에 버튼 추가
 			String str = (String) model.getValueAt(0, i);
-			if(str.equals("0")) {
+			if(str.equals("예약 가능")) {
 				table.getColumnModel().getColumn(i).setCellRenderer(new TableCell(time));
 				table.getColumnModel().getColumn(i).setCellEditor(new TableCell(time));
 			}
@@ -114,6 +114,8 @@ public class ciganpyo extends JPanel {
 						selected_cols.add(hovered_cols.get(i));
 					}
 					hovered_cols.clear();
+					getSelectedTime();
+					main.updateIsAllText();
 					table.repaint();
 				}
 			}
@@ -128,7 +130,7 @@ public class ciganpyo extends JPanel {
 		        if (row >= 0 && col >= 0) {
         			if(table.getValueAt(row, col) instanceof String) {
         				for(int i = col; i < col + cal.getUserTime(); i++) {
-        					if(i < table.getColumnCount() && ((String)table.getValueAt(row,i)).equals("0")) {
+        					if(i < table.getColumnCount() && ((String)table.getValueAt(row,i)).equals("예약 가능")) {
         						hovered_cols.add(i);
         					}
         					else {
@@ -172,6 +174,9 @@ public class ciganpyo extends JPanel {
 	public void loadData(String room,JTable table) {
 		this.selectedRoom = room;
 		
+		this.selected_cols.clear();
+		this.hovered_cols.clear();
+		
 		Database DB = new Database();
 		DB.open();
 		try {
@@ -183,7 +188,7 @@ public class ciganpyo extends JPanel {
 				if(sCol != -1 && eCol != -1) {
 					for(int i = sCol; i < eCol; i++) {
 						reserved_cols.add(i);
-						table.getModel().setValueAt("1", 0, i);
+						table.getModel().setValueAt("예약 완료", 0, i);
 					}
 				}
 			}
@@ -253,8 +258,8 @@ public class ciganpyo extends JPanel {
 	        Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
 	       
 	        if(value instanceof String) {
-	        	if(((String)value).equals("0")) {
-	        		setBackground(Color.blue);
+	        	if(((String)value).equals("예약 가능")) {
+	        		setBackground(new Color(200,200,200));
 	        		for(int i = 0 ; i < selected_cols.size(); i++) {
 	        			if(column == selected_cols.get(i)) {
 	        				setBackground(Color.GRAY);
@@ -263,12 +268,13 @@ public class ciganpyo extends JPanel {
 	        		}
 	        		for(int i = 0 ; i < hovered_cols.size(); i++) {
 	        			if(column == hovered_cols.get(i)) {
-	        				setBackground(Color.GREEN);
+	        				setBackground(Color.YELLOW);
 	        			}
 	        		}
 	        	}
 	        	else {
-	        		setBackground(Color.CYAN);
+	        		setBackground(Color.BLACK);
+	        		setForeground(Color.white);
 	        	}
 	        }
 	        this.setHorizontalAlignment(SwingConstants.CENTER);
@@ -289,7 +295,7 @@ public class ciganpyo extends JPanel {
 		}
 		
 		public void updateTimeTable(int userTime, String[][] data) {
-			data = new String[][] {{"0","0","0","0","0","0","0","0"}};
+			data = new String[][] {{"예약 가능","예약 가능","예약 가능","예약 가능","예약 가능","예약 가능","예약 가능","예약 가능"}};
 			DefaultTableModel tModel = new DefaultTableModel(data,a);
 			table.setModel(tModel);
 			
@@ -307,7 +313,7 @@ public class ciganpyo extends JPanel {
 			/*
 			for(int i = 0; i < 8; i++) { // 예약 안된 부분에 버튼 추가
 				String str = (String) tModel.getValueAt(0, i);
-				if(str.equals("0")) {
+				if(str.equals("예약 가능")) {
 					table.getColumnModel().getColumn(i).setCellRenderer(new TableCell(userTime));
 					table.getColumnModel().getColumn(i).setCellEditor(new TableCell(userTime));
 				}

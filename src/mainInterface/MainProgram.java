@@ -9,7 +9,7 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
-
+import java.awt.HeadlessException;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
@@ -88,8 +88,13 @@ public class MainProgram extends JFrame implements ActionListener {
 	
 	public String loginUserID;
 	public String loginUserPW;
+	
+	private boolean isAllTextIsDone = false;
 
+	private studentInfo std_info;
+	
 	public MainProgram() throws IOException {
+		isAllTextIsDone = false;
 		frm = new JFrame();
 		Container c = frm.getContentPane();
 		card = new CardLayout();
@@ -100,7 +105,8 @@ public class MainProgram extends JFrame implements ActionListener {
 		this.eTime = "";
 		
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
-
+		tabbedPane.setUI(new UI());
+		
 		userPanel = new ReservePanel();
 		mainPanel = new JPanel(new BorderLayout());
 
@@ -116,6 +122,9 @@ public class MainProgram extends JFrame implements ActionListener {
 		tabbedPane.add("login", loginpage.makePanel());
 		tabbedPane.add("reserve", mainPanel);
 		tabbedPane.add("checkReserve", userPanel);
+		
+		tabbedPane.setEnabledAt(1, false);
+		tabbedPane.setEnabledAt(2, false);
 
 		c.add(tabbedPane);
 
@@ -139,7 +148,25 @@ public class MainProgram extends JFrame implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextBtn) {
 			if (getTopCard().equals("timeCard")) {
+				for(int i = 0 ; i < id_textField.length; i++) {
+					try {
+						if(!DB.isExistUser(id_textField[i].getText(), name_textField[i].getText())) {
+							JOptionPane dialog = new JOptionPane();
+							dialog.showMessageDialog(null, "예약에 실패했습니다. 희망 인원 정보를 올바르게 입력해 주십시오.");
+							return;
+						}
+					} catch (SQLException e1) {
+						e1.printStackTrace();
+					}
+				}
 				ArrayList<User> users = new ArrayList<>();
+				
+				try {
+					users.add(DB.findUserById(loginUserID));
+				} catch (SQLException e2) {
+					e2.printStackTrace();
+				}
+				
 				cig.getSelectedTime();
 				for (int i = 0; i < id_textField.length; i++) {
 				
@@ -157,18 +184,30 @@ public class MainProgram extends JFrame implements ActionListener {
 				}else {
 					JOptionPane dialog = new JOptionPane();
 					dialog.showMessageDialog(null, "예약에 성공했습니다");
+					ReservePanel r_panel = (ReservePanel)userPanel;
+					r_panel.updateTable(loginUserID);
+					
+					//cig.loadData(m_selectedroom);
+					
 					m_selectedroom = "";
 					eTime = "";
 					sTime = "";
-					
+					isAllTextIsDone = false;
+					std_info = new studentInfo(1,this);
 					
 					tabbedPane.setSelectedIndex(2);
 					card.next(reservePanel);
+					nextBtn.setText("다음");
+					nextBtn.setEnabled(false);
+					prevBtn.setEnabled(false);
 				}
 
 			}
 			else {
 				card.next(reservePanel);
+				nextBtn.setText("제출");
+				nextBtn.setEnabled(false);
+				prevBtn.setEnabled(true);
 			}
 
 		} else if (e.getSource() == prevBtn) {
@@ -251,8 +290,14 @@ public class MainProgram extends JFrame implements ActionListener {
 			//초기값에 따라 갈리는데 길이정보가 0인거를 구분 
 			if(m_selectedroom.length()>0) {
 				//"성공"
+				try {
+					cal.updateUserRoom(DB.findUserById(loginUserID).getname(),m_selectedroom);
+				} catch (SQLException e1) {
+					e1.printStackTrace();
+				}
 				((infoPanel)roomPanel).updatelist(m_selectedroom);
 				cig.loadData(m_selectedroom);
+				nextBtn.setEnabled(true);
 			}
 
 		}
@@ -305,7 +350,6 @@ public class MainProgram extends JFrame implements ActionListener {
 
 		roomPanel = new infoPanel();
 		// roomPanel.setSize(mapCard.getWidth(),mapCard.getHeight()/2-50);
-		tabbedPane.setUI(new UI());
 
 		mapCard.add(mapPanel);
 		mapCard.add(roomPanel);
@@ -380,7 +424,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		card4_1.add(slider);
 
 		JPanel card4_2 = new JPanel();
-		studentInfo std_info = new studentInfo();
+		std_info = new studentInfo(1,this);
 		std_info.makePanel();
 		card4_2.removeAll();
 		card4_2.add(std_info.get_stdinfo());
@@ -394,11 +438,11 @@ public class MainProgram extends JFrame implements ActionListener {
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
-				studentInfo std_info = null;
+
 				if (e.getSource() == slider) {
 					userlistPart.removeAll();
 					card4_2.removeAll();
-					std_info = new studentInfo();
+					//std_info = new studentInfo(1,this);
 					// std_info.get_stdinfo().removeAll();
 					std_info.setNum(slider.getValue());
 
@@ -448,6 +492,9 @@ public class MainProgram extends JFrame implements ActionListener {
 		prevBtn.addActionListener(this);
 		prevBtn.setBounds(900, 650, 100, 20);
 
+		nextBtn.setEnabled(false);
+		prevBtn.setEnabled(false);
+		
 		btnPanel = new JPanel(new FlowLayout());
 		btnPanel.add(prevBtn);
 		btnPanel.add(nextBtn);
@@ -455,6 +502,20 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	public String getSelectedRoom() {
 		return this.m_selectedroom;
+	}
+	
+	public void updateIsAllText() {
+		this.isAllTextIsDone = true;
+		for(int i = 0 ; i < this.id_textField.length; i++) {
+			if(id_textField[i].getDocument().getLength() * name_textField[i].getDocument().getLength() == 0) {
+				this.isAllTextIsDone = false;
+				break;
+			}
+		}
+		if(this.isAllTextIsDone && this.sTime.length() > 0 && this.eTime.length() > 0)
+			nextBtn.setEnabled(true);
+		else
+			nextBtn.setEnabled(false);
 	}
 	
 	public static void main(String[] args) throws SQLException, IOException {

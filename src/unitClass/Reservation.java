@@ -3,6 +3,7 @@ package unitClass;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 import unitDatabase.Database;
@@ -41,6 +42,7 @@ public class Reservation {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
+		DB.close();
 		return room;
 	}
 	public int getroomID() {
@@ -57,8 +59,27 @@ public class Reservation {
 	}
 	
 	public String toString() {
-		String str = "Reservation// reservID : "+this.reservID+", roomID : "+this.roomID+", Date : "+this.date+", Start Time : "+this.sTime+", End Time : "+this.eTime;
-		
+		Database DB = new Database();
+		DB.open();
+
+		ArrayList<User> users = new ArrayList<>();
+		try {
+			users = DB.getUsersOfReservation(this.reservID);
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		String str = "";
+		str += "일시 : "+this.SDF_DATE.format(this.date)+"\n\n";
+		str += "시작 시간  : "+this.SDF_TIME.format(this.sTime)+"\n\n";
+		str += "종료 시간 : "+this.SDF_TIME.format(this.eTime)+"\n\n";
+		if(!users.isEmpty()) {
+			 str += "대표자 : "+users.get(0).getname()+"\n\n";
+			 for(int i = 1 ; i < users.size(); i++) {
+				 str += "구성원 :   ";
+				 str += users.get(i).getname()+"  ";
+			 }
+		}
+		DB.close();
 		return str;
 	}
 	

@@ -44,6 +44,7 @@ public class ReservePanel extends JPanel{
 	
 	ArrayList<Reservation> reserve_list;
 	
+	JLabel label1;
 	
 	public ReservePanel() {
 		super();
@@ -91,6 +92,7 @@ public class ReservePanel extends JPanel{
 		reserveDetail = new JPanel(new BorderLayout());
 		//reserveDetail.setBackground(Color.BLUE);
 		detailText = new JTextArea();
+
 		reserveDetail.add(detailText);
 		
 		
@@ -103,7 +105,7 @@ public class ReservePanel extends JPanel{
 		};
 		
 		reserveTable = new JTable(tableModel);
-		reserveTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
+		reserveTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		reserveTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
 		reserveTable.setRowHeight(52); reserveTable.setGridColor(Color.BLACK);
 		reserveTable.addMouseListener(new MyMouseListener());
@@ -118,7 +120,7 @@ public class ReservePanel extends JPanel{
 		columnModel.getColumn(3).setCellRenderer(dtcr);
 		
 		JPanel reserveLabel = new JPanel(new FlowLayout());
-		JLabel label1 = new JLabel("손예은님의 예약 내역은 총 3건 입니다.");
+		label1 = new JLabel();
 		reserveLabel.setBackground(Color.WHITE);
 		reserveLabel.add(label1);
 		reserveLabel.setBorder(new LineBorder(Color.BLACK));
@@ -145,6 +147,7 @@ public class ReservePanel extends JPanel{
 
 		try {
 			reserve_list = DB.getReserveByUser(DB.findUserById(sid));
+			label1.setText(DB.findUserById(sid).getname()+"님의 예약 내역은 총 "+reserve_list.size()+"건 입니다.");
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
@@ -163,13 +166,8 @@ public class ReservePanel extends JPanel{
 			if(e.getClickCount() == 2 ) { // 더블클ㄹ릭
 				int row = reserveTable.getSelectedRow();
 				
-				if(row == 0) {
-					detailText.setText("1번째 예약");
-				} else if(row == 1) {
-					detailText.setText("2번째 예약");
-				} else if(row == 2) {
-					detailText.setText("3번째 예약");
-				}
+				detailText.setText(reserve_list.get(row).toString());
+				
 			}
 		}
 	}

@@ -24,6 +24,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 
 import unitDatabase.Database;
@@ -82,6 +83,8 @@ public class loginPage extends JPanel {
 		inputPW.setForeground(Color.GRAY);
 		inputPW.setText("비밀번호를 입력해주세요");
 		
+		inputID.setHorizontalAlignment(SwingConstants.CENTER);
+		inputPW.setHorizontalAlignment(SwingConstants.CENTER);		
 		
 		inputID.addFocusListener(new PlaceHolder());
 		inputPW.addFocusListener(new PlaceHolder());
@@ -104,6 +107,9 @@ public class loginPage extends JPanel {
 						isitLogin = true;
 						SwingUtilities.invokeLater(new Runnable() {
 							public void run() {
+								m.tabbedPane.setEnabledAt(0, false);
+								m.tabbedPane.setEnabledAt(1, true);
+								m.tabbedPane.setEnabledAt(2, true);
 								m.tabbedPane.setSelectedIndex(1);
 								m.loginUserID = login_id;
 								m.loginUserPW = login_pw;
