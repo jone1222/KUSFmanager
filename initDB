@@ -96,7 +96,10 @@ INSERT INTO Item VALUES('회의용 모니터','img\\Monitor.JPG','회의용 모니터 입니다
 INSERT INTO Item VALUES('빔 프로젝터','img\\BeamProjector.jpg','회의용 빔 프로젝터 입니다.','TRUE')
 
 
+SELECT * FROM Reservation;
 
 SELECT * FROM Reservation WHERE r_date='2017-11-29' and ( (sTime > '15:00' and sTime < '18:00') or (eTime >  '15:00' and eTime < '18:00') )
 
 SELECT Reservation.reservId,Reservation.rid,Reservation.r_date,Reservation.sTime,Reservation.eTime,Reservation.waitNum FROM Reservation,ReservedUser WHERE ReservedUser.sid='jone1222' GROUP BY Reservation.reservID;
+
+SELECT rid from Room where rName = '설계실01';

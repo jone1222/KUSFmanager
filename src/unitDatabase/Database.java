@@ -127,6 +127,21 @@ public class Database {
 		return Items;
 	}
 
+	public int getridByName(String roomName) {
+		if(this.isOpened == false) {
+			return -1;
+		}
+		try {
+			String query = "SELECT rid from Room where rName = '"+roomName+"'";
+			PreparedStatement prep = this.connection.prepareStatement(query);
+			ResultSet row = prep.executeQuery();
+			if(row.next())
+				return row.getInt("rid");
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		return -1;
+	}
 	public boolean makeReservation(ArrayList<User> users, int rid, String date, String sTime, String eTime,
 			int waitNum) {
 		if (this.isOpened == false) {
@@ -218,6 +233,21 @@ public class Database {
 
 		ArrayList<Reservation> Reservation_list = new ArrayList<>();
 		String reserve_query = "SELECT * FROM Reservation WHERE Reservation.r_date='" + date + "' and rid=" + roomID;
+		PreparedStatement reserve_prep = this.connection.prepareStatement(reserve_query);
+
+		ResultSet row = reserve_prep.executeQuery();
+
+		while (row.next()) {
+			Reservation_list.add(new Reservation(row.getInt(1), row.getInt(2), row.getString(3), row.getString(4),
+					row.getString(5)));
+		}
+
+		return Reservation_list;
+	}
+	public ArrayList<Reservation> getReserveByDate(String roomName, String date) throws SQLException, ParseException {
+
+		ArrayList<Reservation> Reservation_list = new ArrayList<>();
+		String reserve_query = "SELECT Reservation.* FROM Reservation,Room WHERE room.rid=Reservation.rid and room.rName='"+roomName+"' and r_date='"+date+"'";
 		PreparedStatement reserve_prep = this.connection.prepareStatement(reserve_query);
 
 		ResultSet row = reserve_prep.executeQuery();
@@ -327,4 +357,5 @@ public class Database {
 		return user_list;
 	}
 
+	
 }

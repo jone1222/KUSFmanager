@@ -45,6 +45,7 @@ public class ReservePanel extends JPanel{
 	}
 	void init() {
 		Border = new BorderLayout(0,10);
+		
 		this.setLayout(Border);
 		
 		initUserInfo();

@@ -8,6 +8,8 @@ import java.util.Calendar;
 import java.util.GregorianCalendar;
 import javax.swing.*;
 
+import mainInterface.ciganpyo.timePanel;
+
 class CalendarDataManager extends JPanel { // 6*7배열에 나타낼 달력 값을 구하는 class
 	static final int CAL_WIDTH = 7;
 	final static int CAL_HEIGHT = 6;
@@ -32,6 +34,16 @@ class CalendarDataManager extends JPanel { // 6*7배열에 나타낼 달력 값을 구하는 
 		calMonth = today.get(Calendar.MONTH);
 		calDayOfMon = today.get(Calendar.DAY_OF_MONTH);
 		makeCalData(today);
+	}
+
+	public String getDate() {
+		String day = "";
+		if (calDayOfMon < 10)
+			day = "0" + calDayOfMon;
+		else
+			day = Integer.toString(calDayOfMon);
+		System.out.println((calYear + "-" + (calMonth + 1) + "-" + day));
+		return (calYear + "-" + (calMonth + 1) + "-" + day);
 	}
 
 	private void makeCalData(Calendar cal) {
@@ -90,6 +102,8 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 	// ImageIcon icon = new ImageIcon (
 	// Toolkit.getDefaultToolkit().getImage(getClass().getResource("icon.png")));
 
+	JPanel topParent;
+
 	JPanel calOpPanel;
 	JButton todayBut;
 	JLabel todayLab;
@@ -136,8 +150,9 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 	JPanel RepresentStd;
 	JTextField inputStdName;
 	JTextField inputStdNum;
-	
+
 	public int userTime;
+
 	public int getUserTime() {
 		return this.userTime;
 	}
@@ -157,7 +172,9 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		return frameSubPanelWest;
 	}
 
-	public calendar() { // 구성요소 순으로 정렬되어 있음. 각 판넬 사이에 빈줄로 구별
+	public calendar(JPanel topParent) { // 구성요소 순으로 정렬되어 있음. 각 판넬 사이에 빈줄로 구별
+
+		this.topParent = topParent;
 
 		mainFrame = new JFrame(title);
 		mainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -268,6 +285,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		infoClock.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
 		// infoPanel.add(infoClock, BorderLayout.NORTH);
 
+		userTime = 1;
 		combo.setSelectedIndex(0);
 		combo.addActionListener(new ActionListener() {
 
@@ -401,8 +419,8 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		focusToday(); // 현재 날짜에 focus를 줌 (mainFrame.setVisible(true) 이후에 배치해야함)
 
 		// Thread 작동(시계, bottomMsg 일정시간후 삭제)
-		ThreadConrol threadCnl = new ThreadConrol();
-		threadCnl.start();
+		// ThreadConrol threadCnl = new ThreadConrol();
+		// threadCnl.start();
 	}
 
 	private void focusToday() {
@@ -492,6 +510,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 
 	private class listenForDateButs implements ActionListener {
 		public void actionPerformed(ActionEvent e) {
+			
 			int k = 0, l = 0;
 			for (int i = 0; i < CAL_HEIGHT; i++) {
 				for (int j = 0; j < CAL_WIDTH; j++) {
@@ -504,6 +523,29 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 
 			if (!(k == 0 && l == 0))
 				calDayOfMon = calDates[k][l]; // today버튼을 눌렀을때도 이 actionPerformed함수가 실행되기 때문에 넣은 부분
+
+			getDate();
+			
+			if (topParent != null) {
+				Component[] child_comps = topParent.getComponents();
+				for (int i = 0; i < child_comps.length; i++) {
+					if (child_comps[i].getName().equals("timePart")) {
+						{
+							JPanel timePart = (JPanel) child_comps[i];
+							Component[] child_timePart = timePart.getComponents();
+							for (int j = 0; j < child_timePart.length; j++) {
+								if (child_timePart[j].getName().equals("schedule")) {
+									System.out.println(child_timePart[j] instanceof ciganpyo.timePanel);
+									System.out.println(child_timePart[j].getName());
+									
+									((timePanel)child_timePart[j]).updateTimeTable(userTime,new String[][] {{"0","0","0","0","0","0","0","0","0"}});
+								}
+							}
+						}
+					}
+				}
+			}
+
 
 			cal = new GregorianCalendar(calYear, calMonth, calDayOfMon);
 
@@ -525,45 +567,4 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		}
 	}
 
-	private class ThreadConrol extends Thread {
-		public void run() {
-			boolean msgCntFlag = false;
-			int num = 0;
-			String curStr = new String();
-			while (true) {
-				try {
-					today = Calendar.getInstance();
-					String amPm = (today.get(Calendar.AM_PM) == 0 ? "AM" : "PM");
-					String hour;
-					if (today.get(Calendar.HOUR) == 0)
-						hour = "12";
-					else if (today.get(Calendar.HOUR) == 12)
-						hour = " 0";
-					else
-						hour = (today.get(Calendar.HOUR) < 10 ? " " : "") + today.get(Calendar.HOUR);
-					String min = (today.get(Calendar.MINUTE) < 10 ? "0" : "") + today.get(Calendar.MINUTE);
-					String sec = (today.get(Calendar.SECOND) < 10 ? "0" : "") + today.get(Calendar.SECOND);
-					infoClock.setText(amPm + " " + hour + ":" + min + ":" + sec);
-
-					sleep(1000);
-					String infoStr = bottomInfo.getText();
-
-					if (infoStr != " " && (msgCntFlag == false || curStr != infoStr)) {
-						num = 5;
-						msgCntFlag = true;
-						curStr = infoStr;
-					} else if (infoStr != " " && msgCntFlag == true) {
-						if (num > 0)
-							num--;
-						else {
-							msgCntFlag = false;
-							bottomInfo.setText(" ");
-						}
-					}
-				} catch (InterruptedException e) {
-					System.out.println("Thread:Error");
-				}
-			}
-		}
-	}
 }

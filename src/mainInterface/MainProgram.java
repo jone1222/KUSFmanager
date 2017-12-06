@@ -8,7 +8,6 @@ import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
@@ -26,17 +25,15 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
-import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
-import javax.swing.border.LineBorder;
-import javax.swing.border.TitledBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import unitClass.Item;
+import unitClass.User;
 import unitDatabase.Database;
 
 public class MainProgram extends JFrame implements ActionListener {
@@ -64,7 +61,9 @@ public class MainProgram extends JFrame implements ActionListener {
 	private JLabel pointLabel;
 	private JLabel pointLabel2;
 	
-	private String m_selectedroom = "아무것도없당";
+	private String m_selectedroom;
+	private String sTime;
+	private String eTime;
 	
 	private JSlider slider;
 
@@ -73,6 +72,10 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	private Database DB;
 
+	calendar cal;
+	ciganpyo cig;
+	
+	
 	public MainProgram() throws IOException {
 		frm = new JFrame();
 		Container c = frm.getContentPane();
@@ -80,6 +83,9 @@ public class MainProgram extends JFrame implements ActionListener {
 		DB = new Database();
 		DB.open();
 
+		this.sTime = "";
+		this.eTime = "";
+		
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 
 		userPanel = new ReservePanel();
@@ -117,22 +123,45 @@ public class MainProgram extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextBtn) {
-			if (getTopCard().equals("userCard")) {
+			if (getTopCard().equals("timeCard")) {
+				ArrayList<User> users = new ArrayList<>();
+				cig.getSelectedTime();
 				for (int i = 0; i < id_textField.length; i++) {
+				
 					try {
-						System.out.println(DB.isExistUser(id_textField[i].getText(), name_textField[i].getText()));
+						if(DB.isExistUser(id_textField[i].getText(), name_textField[i].getText())) {
+							users.add(DB.findUserById(id_textField[i].getText()));
+						}
 					} catch (SQLException e1) {
 						e1.printStackTrace();
 					}
 				}
+				if(!DB.makeReservation(users, DB.getridByName(m_selectedroom), cal.getDate(), sTime, eTime, 1)) {
+					JOptionPane dialog = new JOptionPane();
+					dialog.showMessageDialog(null, "예약에 실패했습니다. 희망 인원 중 예약 횟수를 초과하는 회원이 있습니다.");
+				}else {
+					JOptionPane dialog = new JOptionPane();
+					dialog.showMessageDialog(null, "예약에 성공했습니다");
+					m_selectedroom = "";
+					eTime = "";
+					sTime = "";
+					
+					tabbedPane.setSelectedIndex(2);
+					card.next(reservePanel);
+				}
+
 			}
-			card.next(reservePanel);
+			else {
+				card.next(reservePanel);
+			}
 
 		} else if (e.getSource() == prevBtn) {
 			card.previous(reservePanel);
 		}
 	}
 
+	
+	
 	public String getTopCard() {
 		JPanel Card = null;
 		for (Component comp : reservePanel.getComponents()) {
@@ -208,11 +237,17 @@ public class MainProgram extends JFrame implements ActionListener {
 			if(m_selectedroom.length()>0) {
 				//"성공"
 				((infoPanel)roomPanel).updatelist(m_selectedroom);
+				cig.loadData(m_selectedroom);
 			}
 			
 		}
 	}
 
+	public void setTime(String sTime, String eTime) {
+		this.sTime = sTime;
+		this.eTime = eTime;
+	}
+	
 	void initMapCard() {
 		mapCard = new JPanel(new GridLayout(2, 1));
 		JPanel mapPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -268,15 +303,16 @@ public class MainProgram extends JFrame implements ActionListener {
 
 
 	void initTimeCard() {
+		
 		timeCard = new JPanel(new GridLayout(3, 1));
-		calendar cal = new calendar();
-		ciganpyo cig = new ciganpyo(cal);
-
+		cal = new calendar(timeCard);
+		cig = new ciganpyo(cal,this);
+		
 //		timeCard.add(cal.getcal1());
 //		timeCard.add(cal.getcal2());
 //		timeCard.add(cal.getcal3());
 
-		timeCard.add(cig.get_schedule());
+		timeCard.add(cig.init_Schedule(cal.getDate()));
 		timeCard.setName("timeCard");
 
 		//************************* card 3 시작
@@ -284,16 +320,30 @@ public class MainProgram extends JFrame implements ActionListener {
 
 		JPanel card3_1 = new JPanel(new GridLayout(1,2));
 		JPanel card3_2 = new JPanel(new BorderLayout());
-		JPanel card3_3 = new JPanel(new GridLayout(2,1));
 
-		card3_1.add(cal.getcal3());
-		card3_1.add(cal.getcal2());
-		card3_2.add(cig.get_schedule(), BorderLayout.CENTER);		
+		JPanel cal3 = cal.getcal3();
+		JPanel cal2 = cal.getcal2();
+		JPanel schedule = cig.get_schedule();
+
+		card3_1.setName("datePart");
+		card3_2.setName("timePart");
+		cal3.setName("Cal3");
+		cal2.setName("Cal2");
+		schedule.setName("schedule");
+		
+		card3_1.add(cal3);
+		card3_1.add(cal2);
+		card3_2.add(schedule, BorderLayout.CENTER);		
 		
 		timeCard.add(card3_1);
 		timeCard.add(card3_2);
 		
+		Component[] comps = card3_1.getComponents();
+		for(int i = 0 ; i < comps.length; i++) {
+			System.out.println(comps[i].getName());
+		}
 		
+		//timeCard.addListener
 
 	}
 
@@ -356,6 +406,9 @@ public class MainProgram extends JFrame implements ActionListener {
 
 		});
 
+		id_textField = std_info.get_textsid();
+		name_textField = std_info.get_textName();
+		
 		userlistPart.setName("userCard");
 		
 	}
@@ -392,6 +445,10 @@ public class MainProgram extends JFrame implements ActionListener {
 		btnPanel.add(nextBtn);
 	}
 
+	public String getSelectedRoom() {
+		return this.m_selectedroom;
+	}
+	
 	public static void main(String[] args) throws SQLException, IOException {
 		new MainProgram();
 	}
