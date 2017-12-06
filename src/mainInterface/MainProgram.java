@@ -338,14 +338,19 @@ public class MainProgram extends JFrame implements ActionListener {
 				// TODO Auto-generated method stub
 				studentInfo std_info = null;
 				if (e.getSource() == slider) {
+					userlistPart.removeAll();
 					card4_2.removeAll();
 					std_info = new studentInfo();
 					// std_info.get_stdinfo().removeAll();
 					std_info.setNum(slider.getValue());
+					
 					id_textField = std_info.get_textsid();
 					name_textField = std_info.get_textName();
 					card4_2.add(std_info.get_stdinfo());
+
+					userlistPart.add(card4_1);
 					userlistPart.add(card4_2);
+					timeCard.add(userlistPart);
 				}
 			}
 
