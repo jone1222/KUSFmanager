@@ -22,7 +22,9 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 
 import unitDatabase.Database;
 
@@ -36,6 +38,10 @@ public class loginPage extends JPanel {
 
 	private ImageIcon bgImage; // 로그인 화면 이미지
 	private JScrollPane scrollPane;
+	
+	private boolean isitLogin = false;
+	
+	private MainProgram m;
 	
 	public loginPage() throws IOException {
 		loginPanel = new JPanel(new BorderLayout(100,100)) {
@@ -95,6 +101,17 @@ public class loginPage extends JPanel {
 				try {
 					if(db.checkOnLogin(inputID.getText(), inputPW.getText())) {
 						login_id = inputID.getText(); login_pw = inputPW.getText();
+						isitLogin = true;
+						SwingUtilities.invokeLater(new Runnable() {
+							public void run() {
+								m.tabbedPane.setSelectedIndex(1);
+								m.loginUserID = login_id;
+								m.loginUserPW = login_pw;
+								System.out.println(m.loginUserID);
+								System.out.println(m.loginUserPW);
+								((ReservePanel)m.getUserPanel()).updateTable(m.loginUserID);
+							}
+						});
 					}else {
 						JOptionPane dialog = new JOptionPane();
 						dialog.showMessageDialog(null, "아이디 또는 비밀번호가 잘못되었습니다.");
@@ -126,12 +143,19 @@ public class loginPage extends JPanel {
 		loginPanel.add(subPanel3, BorderLayout.SOUTH);
 		//loginPanel.setBackground(Color.WHITE);
 	}
-
+	
+	public void getMP(MainProgram m) {
+		this.m = m;
+	}
+	
 	public JScrollPane makePanel() {
 		return scrollPane;
 	}
 	public String[] getLoginUser() {
 		return new String[] {this.login_id,this.login_pw};
+	}
+	public boolean getisitLogin() {
+		return isitLogin;
 	}
 	
 	class PlaceHolder implements FocusListener{
