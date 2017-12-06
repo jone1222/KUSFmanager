@@ -33,6 +33,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JTabbedPane;
 import javax.swing.JTextField;
+import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -51,7 +52,7 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	private JFrame frm;
 
-	private JTabbedPane tabbedPane;
+	public JTabbedPane tabbedPane;
 	private JPanel mainPanel, userPanel;
 
 	private CardLayout card;
@@ -77,6 +78,9 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	private Database DB;
 
+	public String loginUserID;
+	public String loginUserPW;
+
 	public MainProgram() throws IOException {
 		frm = new JFrame();
 		Container c = frm.getContentPane();
@@ -97,14 +101,13 @@ public class MainProgram extends JFrame implements ActionListener {
 		mainPanel.add(btnPanel, BorderLayout.SOUTH);
 
 		loginpage = new loginPage();
-
+		loginpage.getMP(this);
 		tabbedPane.add("login", loginpage.makePanel());
 		tabbedPane.add("reserve", mainPanel);
 		tabbedPane.add("checkReserve", userPanel);
 
 		c.add(tabbedPane);
 
-		((ReservePanel) userPanel).updateTable("jone1222");
 
 		frm.setTitle("건국대 Smart Factory 예약 프로그램");
 		frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -117,6 +120,10 @@ public class MainProgram extends JFrame implements ActionListener {
 		frm.setVisible(true);
 	}
 
+	public JPanel getUserPanel() {
+		return userPanel;
+	}
+	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextBtn) {
@@ -402,7 +409,7 @@ class UI extends BasicTabbedPaneUI {
 		Color c = new Color(228, 255, 204);
 		g.setColor(c);
 		g.drawRoundRect(x, y, w, h, 10, 10);
-		
+
 		if (isSelected) {
 			// 여기는 선택시 보여주는 부분을 그려주면 됩니다.
 			g.setColor(Color.magenta);
