@@ -9,8 +9,8 @@ import unitDatabase.Database;
 
 public class Reservation {
 	public static SimpleDateFormat SDF_DATE = new SimpleDateFormat("yyyy-MM-dd");
-	public static SimpleDateFormat SDF_TIME = new SimpleDateFormat("hh:mm");
-	public static SimpleDateFormat SDF_ALL = new SimpleDateFormat("yyyy-MM-dd hh:mm");
+	public static SimpleDateFormat SDF_TIME = new SimpleDateFormat("HH:mm");
+	public static SimpleDateFormat SDF_ALL = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	
 	private int reservID;
 	private int roomID;
@@ -28,7 +28,6 @@ public class Reservation {
 		} catch (ParseException e) {
 			e.printStackTrace();
 		}
-
 	}
 	public int getreservID() {
 		return this.reservID;

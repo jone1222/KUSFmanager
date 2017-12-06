@@ -13,6 +13,7 @@ import java.sql.SQLException;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -24,6 +25,9 @@ public class loginPage extends JPanel {
 	private JLabel id, pw, label;
 	private JTextField inputID, inputPW;
 
+	private String login_id, login_pw;
+	
+	
 	public loginPage() {
 		loginPanel = new JPanel(new BorderLayout(150,150));
 		loginPanel.setBorder(BorderFactory.createEmptyBorder(100, 100, 150, 100)); // 패널 내 상좌하우 순으로 여백
@@ -57,7 +61,13 @@ public class loginPage extends JPanel {
 				Database db = new Database();
 				db.open();
 				try {
-					System.out.println(db.checkOnLogin(inputID.getText(), inputPW.getText()));
+					if(db.checkOnLogin(inputID.getText(), inputPW.getText())) {
+						login_id = inputID.getText(); login_pw = inputPW.getText();
+					}else {
+						JOptionPane dialog = new JOptionPane();
+						dialog.showMessageDialog(null, "아이디 또는 비밀번호가 잘못되었습니다.");
+					}
+							
 				} catch (SQLException e1) {
 					e1.printStackTrace();
 				}
@@ -79,6 +89,10 @@ public class loginPage extends JPanel {
 	public JPanel makePanel() {
 		return loginPanel;
 	}
+	public String[] getLoginUser() {
+		return new String[] {this.login_id,this.login_pw};
+	}
+	
 	class PlaceHolder implements FocusListener{
 
 		@Override
@@ -114,6 +128,5 @@ public class loginPage extends JPanel {
 				}
 			}
 		}
-		
 	}
 }

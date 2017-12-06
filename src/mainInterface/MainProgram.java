@@ -56,13 +56,14 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	private JPanel reservePanel, btnPanel;
 
+	private loginPage loginpage;
+	
 	private Point pt;
 	private JLabel pointLabel;
 	private JSlider slider;
 
 	private JTextField[] id_textField;
 	private JTextField[] name_textField;
-	
 	
 	private Database DB;
 	
@@ -75,7 +76,7 @@ public class MainProgram extends JFrame implements ActionListener {
 
 		tabbedPane = new JTabbedPane(JTabbedPane.LEFT);
 
-		userPanel = new JPanel();
+		userPanel = new ReservePanel();
 		mainPanel = new JPanel(new BorderLayout());
 		
 		initReservePanel();
@@ -85,12 +86,17 @@ public class MainProgram extends JFrame implements ActionListener {
 		mainPanel.add(reservePanel, BorderLayout.CENTER);
 		mainPanel.add(btnPanel, BorderLayout.SOUTH);
 		
-		tabbedPane.add("login",new loginPage().makePanel());
+		loginpage = new loginPage();
+		
+		tabbedPane.add("login",loginpage.makePanel());
 		tabbedPane.add("reserve", mainPanel);
 		tabbedPane.add("checkReserve", userPanel);
 
 		c.add(tabbedPane);
 
+		
+		((ReservePanel)userPanel).updateTable("jone1222");
+		
 		frm.setTitle("건국대 Smart Factory 예약 프로그램");
 		frm.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
