@@ -3,9 +3,13 @@ package mainInterface;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
+import javax.swing.BorderFactory;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -13,8 +17,10 @@ import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.SwingConstants;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
@@ -25,7 +31,7 @@ public class ReservePanel extends JPanel{
 	
 	BorderLayout Border;
 	
-	JPanel userInfo, reserveInfo, reserveDetail;
+	JPanel userInfo, reserveInfo, reserveDetail, reserveTables;
 	
 	JTextField sidField, nameField;
 	
@@ -46,27 +52,26 @@ public class ReservePanel extends JPanel{
 	void init() {
 		Border = new BorderLayout(0,10);
 		this.setLayout(Border);
+		this.setBorder(BorderFactory.createEmptyBorder(110, 150, 180, 150)); // 패널 내 상좌하우 순으로 여백
 		
 		initUserInfo();
 		
 		initReserveInfo();
 		
-		initReserveDetail();
-		
 		this.add(userInfo, BorderLayout.NORTH);
 		this.add(reserveInfo, BorderLayout.CENTER);
-		this.add(reserveDetail, BorderLayout.SOUTH);
+		//this.add(reserveDetail, BorderLayout.SOUTH);
 	}
 	void initUserInfo() {
 		userInfo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		userInfo.setBackground(Color.RED);
+		//userInfo.setBackground(Color.RED);
 		
-		JLabel idLabel = new JLabel("아이디 : ");
+		JLabel idLabel = new JLabel("학번 : ");
 		sidField = new JTextField(15);
 		sidField.setText(sid);
 		sidField.setEnabled(false);
 		
-		JLabel nameLabel = new JLabel("학번 : ");
+		JLabel nameLabel = new JLabel("이름 : ");
 		nameField = new JTextField(15);
 		nameField.setText(name);
 		nameField.setEnabled(false);
@@ -77,8 +82,16 @@ public class ReservePanel extends JPanel{
 		userInfo.add(nameField);
 	}
 	void initReserveInfo() {
-		reserveInfo = new JPanel(new FlowLayout(FlowLayout.CENTER));
-		reserveInfo.setBackground(Color.GREEN);
+		reserveInfo = new JPanel(new GridLayout(1,2));
+		//reserveInfo.setBackground(Color.GREEN);
+		
+		reserveTables = new JPanel(new GridLayout(2,1));
+		
+		reserveDetail = new JPanel(new BorderLayout());
+		//reserveDetail.setBackground(Color.BLUE);
+		detailText = new JTextArea();
+		reserveDetail.add(detailText);
+		
 		
 		tableModel = new DefaultTableModel(new String[] { "대여 공간명", "예약 날짜", "시작 시간", "종료 시간" },0) {
 			@Override
@@ -87,28 +100,41 @@ public class ReservePanel extends JPanel{
 				return false;
 			}			
 		};
+		
 		reserveTable = new JTable(tableModel);
 		reserveTable.setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION);
-		reserveTable.setBackground(Color.WHITE);
 		reserveTable.setAutoResizeMode(JTable.AUTO_RESIZE_NEXT_COLUMN);
+		reserveTable.setRowHeight(52); reserveTable.setGridColor(Color.BLACK);
+		reserveTable.addMouseListener(new MyMouseListener());
+		
+		DefaultTableCellRenderer dtcr = new DefaultTableCellRenderer();
+		dtcr.setHorizontalAlignment(SwingConstants.CENTER);
+	
 		TableColumnModel columnModel = reserveTable.getColumnModel();
-		columnModel.getColumn(0).setPreferredWidth(500);
-		columnModel.getColumn(1).setPreferredWidth(1000);
-		columnModel.getColumn(2).setPreferredWidth(1000);
-		columnModel.getColumn(3).setPreferredWidth(1000);
-		JScrollPane scrollTable = new JScrollPane(reserveTable,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		//scrollTable.setSize(1000, 300);
-		reserveInfo.add(scrollTable);
-	}
-	void initReserveDetail() {
-		reserveDetail = new JPanel();
-		reserveDetail.setBackground(Color.BLUE);
+		columnModel.getColumn(0).setCellRenderer(dtcr);
+		columnModel.getColumn(1).setCellRenderer(dtcr);
+		columnModel.getColumn(2).setCellRenderer(dtcr);
+		columnModel.getColumn(3).setCellRenderer(dtcr);
 		
-		detailText = new JTextArea();
+		JPanel reserveLabel = new JPanel(new FlowLayout());
+		JLabel label1 = new JLabel("손예은님의 예약 내역은 총 3건 입니다.");
+		reserveLabel.setBackground(Color.WHITE);
+		reserveLabel.add(label1);
+		reserveLabel.setBorder(new LineBorder(Color.BLACK));
 		
-		reserveDetail.add(detailText);
-		reserveDetail.setBorder(new TitledBorder(new LineBorder(Color.BLACK,2),"예약 정보"));
+		reserveTables.add(reserveLabel);
+		reserveTables.add(reserveTable);
+		reserveTables.setBorder(new TitledBorder(new LineBorder(Color.BLACK,2),"예약 정보"));
+		reserveDetail.setBorder(new TitledBorder(new LineBorder(Color.BLACK,2),"상세 정보"));
+		
+		//JScrollPane scrollTables = new JScrollPane(reserveTables,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollDetail =new JScrollPane(reserveDetail,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+
+		reserveInfo.add(reserveTables);
+		reserveInfo.add(scrollDetail);
+		
 	}
+	
 	void updateTable(String sid) {
 		
 		reserve_list = new ArrayList<>();
@@ -128,5 +154,22 @@ public class ReservePanel extends JPanel{
 		}
 		
 		DB.close();
+	}
+	
+	class MyMouseListener extends MouseAdapter {
+		
+		public void mouseClicked(MouseEvent e) {
+			if(e.getClickCount() == 2 ) { // 더블클ㄹ릭
+				int row = reserveTable.getSelectedRow();
+				
+				if(row == 0) {
+					detailText.setText("1번째 예약");
+				} else if(row == 1) {
+					detailText.setText("2번째 예약");
+				} else if(row == 2) {
+					detailText.setText("3번째 예약");
+				}
+			}
+		}
 	}
 }
