@@ -20,6 +20,9 @@ class CalendarDataManager extends JPanel { // 6*7배열에 나타낼 달력 값을 구하는 
 	Calendar today = Calendar.getInstance();
 	Calendar cal;
 
+	private String getTime[] = { "1시간", "2시간", "3시간", "4시간" }; // 몇시간 사용할지 선택
+	JComboBox<String> combo = new JComboBox<String>(getTime);
+
 	public CalendarDataManager() {
 		setToday();
 	}
@@ -129,6 +132,15 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 	final String DelButMsg2 = "작성되지 않았거나 이미 삭제된 memo입니다.";
 	final String DelButMsg3 = "<html><font color=red>ERROR : 파일 삭제 실패</html>";
 	final String ClrButMsg1 = "입력된 메모를 비웠습니다.";
+
+	JPanel RepresentStd;
+	JTextField inputStdName;
+	JTextField inputStdNum;
+	
+	public int userTime;
+	public int getUserTime() {
+		return this.userTime;
+	}
 
 	public JPanel getcal1() {
 
@@ -251,23 +263,53 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		showCal(); // 달력을 표시
 
 		infoPanel = new JPanel();
-		infoPanel.setLayout(new BorderLayout());
+		infoPanel.setLayout(new FlowLayout());
 		infoClock = new JLabel("", SwingConstants.RIGHT);
 		infoClock.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
-		infoPanel.add(infoClock, BorderLayout.NORTH);
+		// infoPanel.add(infoClock, BorderLayout.NORTH);
+
+		combo.setSelectedIndex(0);
+		combo.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				userTime = combo.getSelectedIndex() + 1;
+				System.out.println(userTime);
+			}
+
+		});
+
+		infoPanel.add(combo);
+
 		selectedDate = new JLabel("<Html><font size=3>" + (today.get(Calendar.MONTH) + 1) + "/"
 				+ today.get(Calendar.DAY_OF_MONTH) + "/" + today.get(Calendar.YEAR) + "&nbsp;(Today)</html>",
 				SwingConstants.LEFT);
 		selectedDate.setBorder(BorderFactory.createEmptyBorder(0, 5, 0, 0));
 
 		memoPanel = new JPanel();
-		memoPanel.setBorder(BorderFactory.createTitledBorder("Memo"));
+
+		// memoPanel.setBorder(BorderFactory.createTitledBorder("Memo"));
+		JLabel memoLabel = new JLabel();
 		memoArea = new JTextArea();
 		memoArea.setLineWrap(true);
 		memoArea.setWrapStyleWord(true);
-		memoAreaSP = new JScrollPane(memoArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
-				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		// memoAreaSP = new JScrollPane(memoArea,
+		// JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		readMemo();
+
+		RepresentStd = new JPanel(new GridLayout(2, 2));
+		RepresentStd.setBorder(BorderFactory.createEmptyBorder(10, 10, 10, 10));
+		JLabel label1 = new JLabel("대표자 이름 : ");
+		JLabel label2 = new JLabel("대표자 학번 : ");
+		inputStdName = new JTextField();
+		inputStdNum = new JTextField();
+		RepresentStd.add(label1);
+		RepresentStd.add(inputStdName);
+		RepresentStd.add(label2);
+		RepresentStd.add(inputStdNum);
+		memoAreaSP = new JScrollPane(RepresentStd, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS,
+				JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 
 		memoSubPanel = new JPanel();
 		saveBut = new JButton("Save");
@@ -280,6 +322,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 
 					String memo = memoArea.getText();
 					if (memo.length() > 0) {
+						// ************ Save 누르면 날짜 받아오는 곳 ************
 						BufferedWriter out = new BufferedWriter(
 								new FileWriter("MemoData/" + calYear + ((calMonth + 1) < 10 ? "0" : "") + (calMonth + 1)
 										+ (calDayOfMon < 10 ? "0" : "") + calDayOfMon + ".txt"));
@@ -317,9 +360,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 				bottomInfo.setText(ClrButMsg1);
 			}
 		});
-		memoSubPanel.add(saveBut);
-		memoSubPanel.add(delBut);
-		memoSubPanel.add(clearBut);
+
 		memoPanel.setLayout(new BorderLayout());
 		memoPanel.add(selectedDate, BorderLayout.NORTH);
 		memoPanel.add(memoAreaSP, BorderLayout.CENTER);
@@ -356,7 +397,6 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		mainFrame.add(frameSubPanelWest, BorderLayout.WEST);
 		mainFrame.add(frameSubPanelEast, BorderLayout.CENTER);
 		mainFrame.add(frameBottomPanel, BorderLayout.SOUTH);
-		//mainFrame.setVisible(true);
 
 		focusToday(); // 현재 날짜에 focus를 줌 (mainFrame.setVisible(true) 이후에 배치해야함)
 
@@ -518,7 +558,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 						else {
 							msgCntFlag = false;
 							bottomInfo.setText(" ");
-						} // sdlfknsdflkn
+						}
 					}
 				} catch (InterruptedException e) {
 					System.out.println("Thread:Error");

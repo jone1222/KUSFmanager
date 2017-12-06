@@ -1,7 +1,6 @@
 package mainInterface;
 
 import java.awt.*;
-
 import javax.swing.*;
 
 public class studentInfo extends JPanel{

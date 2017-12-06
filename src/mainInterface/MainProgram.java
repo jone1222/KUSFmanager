@@ -52,8 +52,8 @@ public class MainProgram extends JFrame implements ActionListener {
 
 	private CardLayout card;
 
-	private JPanel mapCard, timeCard, userlistCard;
-
+	private JPanel mapCard, timeCard, timePart, userlistPart;
+	
 	private JPanel reservePanel, btnPanel;
 
 	private JPanel roomPanel;
@@ -62,9 +62,8 @@ public class MainProgram extends JFrame implements ActionListener {
 	
 	private Point pt;
 	private JLabel pointLabel;
-	
-	
 	private JLabel pointLabel2;
+	
 	private String m_selectedroom = "아무것도없당";
 	
 	private JSlider slider;
@@ -269,28 +268,45 @@ public class MainProgram extends JFrame implements ActionListener {
 
 
 	void initTimeCard() {
-		timeCard = new JPanel(new GridLayout(2, 1));
+		timeCard = new JPanel(new GridLayout(3, 1));
 		calendar cal = new calendar();
-		ciganpyo cig = new ciganpyo();
+		ciganpyo cig = new ciganpyo(cal);
 
-		timeCard.add(cal.getcal1());
-		timeCard.add(cal.getcal2());
-		timeCard.add(cal.getcal3());
+//		timeCard.add(cal.getcal1());
+//		timeCard.add(cal.getcal2());
+//		timeCard.add(cal.getcal3());
 
 		timeCard.add(cig.get_schedule());
 		timeCard.setName("timeCard");
+
+		//************************* card 3 시작
+		
+
+		JPanel card3_1 = new JPanel(new GridLayout(1,2));
+		JPanel card3_2 = new JPanel(new BorderLayout());
+		JPanel card3_3 = new JPanel(new GridLayout(2,1));
+
+		card3_1.add(cal.getcal3());
+		card3_1.add(cal.getcal2());
+		card3_2.add(cig.get_schedule(), BorderLayout.CENTER);		
+		
+		timeCard.add(card3_1);
+		timeCard.add(card3_2);
+		
+		
+
 	}
 
 	void initListCard() {
-		userlistCard = new JPanel(new GridLayout(2, 1));
+		userlistPart = new JPanel(new GridLayout(2, 1));
 		JPanel card4_1 = new JPanel(null);
 
-		// 디버그용
-		card4_1.setBackground(Color.CYAN);
-
-		JLabel sliderLabel = new JLabel("인원 수를 선택해 주세요");
-		sliderLabel.setSize(300, 40);
-		sliderLabel.setLocation(550, 10);
+		card4_1.setSize(screenWidth/7,screenHeight/2); 
+		// 카드 4안에 명수 선택할 라벨 하나 밑에 학생정보 입력할 라벨을 gridlayout 으로 2대1로 구분
+		
+		JLabel label2 = new JLabel("추가 학생 정보 입력");
+		label2.setSize(150, 40);
+		label2.setLocation(550, 10);
 
 		slider = new JSlider(JSlider.HORIZONTAL);
 		slider.setMaximum(6);
@@ -301,25 +317,19 @@ public class MainProgram extends JFrame implements ActionListener {
 		slider.setPaintTicks(true);
 		slider.setBounds(150, 50, 900, 70);
 
-		card4_1.add(sliderLabel);
+		card4_1.add(label2);
 		card4_1.add(slider);
-
-		JPanel card4_2 = new JPanel(new BorderLayout());
+		
+		JPanel card4_2 = new JPanel();
 		studentInfo std_info = new studentInfo();
 		std_info.makePanel();
-		id_textField = std_info.get_textsid();
-		name_textField = std_info.get_textName();
-
 		card4_2.removeAll();
-		card4_2.setBackground(Color.GREEN);
-
-		JLabel inputLabel = new JLabel("학번과 이름을 입력해주세요");
-		inputLabel.setSize(300, 40);
-		card4_2.add(inputLabel, BorderLayout.NORTH);
-		card4_2.add(std_info.get_stdinfo(), BorderLayout.CENTER);
-
-		userlistCard.add(card4_1);
-		userlistCard.add(card4_2);
+		card4_2.add(std_info.get_stdinfo());
+		
+		userlistPart.add(card4_1);
+		userlistPart.add(card4_2);
+		timeCard.add(userlistPart);
+		
 
 		slider.addChangeListener(new ChangeListener() {
 
@@ -335,13 +345,14 @@ public class MainProgram extends JFrame implements ActionListener {
 					id_textField = std_info.get_textsid();
 					name_textField = std_info.get_textName();
 					card4_2.add(std_info.get_stdinfo());
-					userlistCard.add(card4_2);
+					userlistPart.add(card4_2);
 				}
 			}
 
 		});
 
-		userlistCard.setName("userCard");
+		userlistPart.setName("userCard");
+		
 	}
 
 	void initReservePanel() {
@@ -358,7 +369,7 @@ public class MainProgram extends JFrame implements ActionListener {
 
 		reservePanel.add("1", mapCard);
 		reservePanel.add("3", timeCard);
-		reservePanel.add("4", userlistCard);
+		//reservePanel.add("4", userlistPart);
 
 	}
 

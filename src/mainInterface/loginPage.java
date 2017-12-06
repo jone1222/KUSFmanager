@@ -8,9 +8,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.sql.SQLException;
 
+import javax.imageio.ImageIO;
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -27,21 +32,27 @@ public class loginPage extends JPanel {
 
 	private String login_id, login_pw;
 	
-	
-	public loginPage() {
-		loginPanel = new JPanel(new BorderLayout(150,150));
-		loginPanel.setBorder(BorderFactory.createEmptyBorder(100, 100, 150, 100)); // 패널 내 상좌하우 순으로 여백
+	public loginPage() throws IOException {
+		loginPanel = new JPanel(new BorderLayout(100,100));
+		loginPanel.setBorder(BorderFactory.createEmptyBorder(30, 300, 150, 300)); // 패널 내 상좌하우 순으로 여백
+		
 		subPanel1 = new JPanel(new FlowLayout());
-		subPanel2 = new JPanel(new GridLayout(2,2));
+		subPanel2 = new JPanel(new GridLayout(2,1));
 		subPanel3 = new JPanel(new FlowLayout());
 		
-		label = new JLabel("로그인 페이지");
+		BufferedImage img1 = ImageIO.read(new File("img\\kuMark.jpg")); // card1 에 이미지를 보여준다
+		JLabel floor1 = new JLabel(new ImageIcon(img1)); 
+		floor1.setSize(600, 600);
+		floor1.setLocation(10, 0);
+		
+		//label = new JLabel("로그인 페이지");
 		id = new JLabel("I D : ");
 		pw = new JLabel("P W : ");
 		
 		inputID = new JTextField();
+		inputID.setText("I  D");
 		inputPW = new JTextField();
-		
+
 		inputID.setForeground(Color.GRAY);
 		inputID.setText("ID를 입력해주세요");
 		inputPW.setForeground(Color.GRAY);
@@ -50,13 +61,16 @@ public class loginPage extends JPanel {
 		
 		inputID.addFocusListener(new PlaceHolder());
 		inputPW.addFocusListener(new PlaceHolder());
+			
+		loginSubmit = new JButton(new ImageIcon("img/loginImg2.png"));
+		ImageIcon rolloverIcon = new ImageIcon("img/loginImg.png");
 		
-		
-		loginSubmit = new JButton("로그인");
+
 		loginSubmit.addActionListener(new ActionListener() {
 
+
 			@Override
-			public void actionPerformed(ActionEvent e) { // 로그인이 허용되어야 탭 접속이 가능하도록
+			public void actionPerformed(ActionEvent arg0) {
 				// TODO Auto-generated method stub
 				Database db = new Database();
 				db.open();
@@ -72,18 +86,27 @@ public class loginPage extends JPanel {
 					e1.printStackTrace();
 				}
 				db.close();
+				
 			}
 			
 		});
 		
-		subPanel1.add(label);
-		subPanel2.add(id); subPanel2.add(inputID);
-		subPanel2.add(pw); subPanel2.add(inputPW);
+		loginSubmit.setRolloverIcon(rolloverIcon);
+		loginSubmit.setBorderPainted(false); 
+		loginSubmit.setFocusPainted(false); 
+		loginSubmit.setContentAreaFilled(false);
+		
+		subPanel1.add(floor1);
+		//subPanel2.add(id); 
+		subPanel2.add(inputID);
+		//subPanel2.add(pw); 
+		subPanel2.add(inputPW);
 		subPanel3.add(loginSubmit);
 		
 		loginPanel.add(subPanel1, BorderLayout.NORTH);
 		loginPanel.add(subPanel2, BorderLayout.CENTER);
 		loginPanel.add(subPanel3, BorderLayout.SOUTH);
+		//loginPanel.setBackground(Color.WHITE);
 	}
 	
 	public JPanel makePanel() {
