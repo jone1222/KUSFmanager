@@ -211,7 +211,12 @@ public class MainProgram extends JFrame implements ActionListener {
 			}
 
 		} else if (e.getSource() == prevBtn) {
-			card.previous(reservePanel);
+			if (getTopCard().equals("timeCard")) {
+				card.previous(reservePanel);
+				nextBtn.setText("다음");
+				nextBtn.setEnabled(true);
+				prevBtn.setEnabled(false);
+			}
 		}
 	}
 
@@ -277,9 +282,6 @@ public class MainProgram extends JFrame implements ActionListener {
 				if (pt.x > 174 && pt.y > 210 && pt.x < 254 && pt.y < 258) {
 					selectedroom = "3d프린트실";
 				}
-				if (pt.x > 257 && pt.y > 213 && pt.x < 366 && pt.y < 294) {
-					selectedroom = "전기전자";
-				}
 				if (pt.x > 488 && pt.y > 219 && pt.x < 630 && pt.y < 296) {
 					selectedroom = "VR실";
 				}
@@ -297,6 +299,7 @@ public class MainProgram extends JFrame implements ActionListener {
 				}
 				((infoPanel)roomPanel).updatelist(m_selectedroom);
 				cig.loadData(m_selectedroom);
+				((infoPanel)roomPanel).resetItemInfo();
 				nextBtn.setEnabled(true);
 			}
 
@@ -433,17 +436,18 @@ public class MainProgram extends JFrame implements ActionListener {
 		userlistPart.add(card4_2);
 		timeCard.add(userlistPart);
 
+		MainProgram prg = this;
 		slider.addChangeListener(new ChangeListener() {
 
 			@Override
 			public void stateChanged(ChangeEvent e) {
 				// TODO Auto-generated method stub
-
+				std_info = null;
 				if (e.getSource() == slider) {
 					userlistPart.removeAll();
 					card4_2.removeAll();
-					//std_info = new studentInfo(1,this);
-					// std_info.get_stdinfo().removeAll();
+					std_info = new studentInfo(1,prg);
+					//std_info.get_stdinfo().removeAll();
 					std_info.setNum(slider.getValue());
 
 					id_textField = std_info.get_textsid();
@@ -452,6 +456,7 @@ public class MainProgram extends JFrame implements ActionListener {
 
 					userlistPart.add(card4_1);
 					userlistPart.add(card4_2);
+					userlistPart.repaint();
 					timeCard.add(userlistPart);
 				}
 			}

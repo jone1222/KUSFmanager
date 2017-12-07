@@ -55,6 +55,9 @@ public class infoPanel extends JPanel{
 		super();
 		init();
 	}
+	public void resetItemInfo() {
+		this.iteminfo.setText("");
+	}
 	public void init() {
 		grid = new GridBagLayout();
 		gridCon = new GridBagConstraints();
@@ -86,6 +89,7 @@ public class infoPanel extends JPanel{
 		
 		iteminfoPanel = new JPanel(new BorderLayout());
 		iteminfo = new TextArea();
+
 		iteminfo.setEditable(false);
 		iteminfo.setFont(ft);
 		
@@ -107,6 +111,8 @@ public class infoPanel extends JPanel{
 			if(!arg0.getValueIsAdjusting() && !isChanging) {
 				int index = itemList.getSelectedIndex();
 				Item item = items.get(index);
+				//String str = item.getDescription();
+				
 				iteminfo.setText(item.getDescription());
 				
 			}
@@ -138,7 +144,7 @@ public class infoPanel extends JPanel{
 			for(int i = 0 ; i < items.size(); i++) {
 				Item item = items.get(i);
 				BufferedImage img = ImageIO.read(new File(item.getImage()));
-				Image dimg = img.getScaledInstance(200, 200, Image.SCALE_SMOOTH);
+				Image dimg = img.getScaledInstance(140, 140, Image.SCALE_SMOOTH);
 				/*
 				JLabel imgLabel = new JLabel(item.getiName(),new ImageIcon(dimg),JLabel.LEFT);
 				*/
@@ -157,8 +163,7 @@ public class infoPanel extends JPanel{
 			
 			room = DB.findRoomByName(roomName);
 			String desc = room.getDescription();
-			roominfo.setText("");
-			roominfo.append(desc);
+			roominfo.setText(desc);
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

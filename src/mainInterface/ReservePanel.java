@@ -25,6 +25,7 @@ import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumnModel;
 
 import unitClass.Reservation;
+import unitClass.User;
 import unitDatabase.Database;
 
 public class ReservePanel extends JPanel{
@@ -49,6 +50,10 @@ public class ReservePanel extends JPanel{
 	public ReservePanel() {
 		super();
 		init();
+	}
+	public void updateUser(String sid, String name) {
+		this.sid = sid; this.name = name;
+		this.sidField.setText(sid); this.nameField.setText(name);
 	}
 	void init() {
 		Border = new BorderLayout(0,10);
@@ -141,12 +146,16 @@ public class ReservePanel extends JPanel{
 	void updateTable(String sid) {
 		
 		reserve_list = new ArrayList<>();
+		for(int i = 0 ; i < tableModel.getRowCount(); i++)
+			tableModel.removeRow(i);
 		
 		Database DB = new Database();
 		DB.open();
 
 		try {
-			reserve_list = DB.getReserveByUser(DB.findUserById(sid));
+			User user = DB.findUserById(sid);
+			updateUser(user.getsid(),user.getname());
+			reserve_list = DB.getReserveByUser(user);
 			label1.setText(DB.findUserById(sid).getname()+"님의 예약 내역은 총 "+reserve_list.size()+"건 입니다.");
 		} catch (SQLException e) {
 			e.printStackTrace();
