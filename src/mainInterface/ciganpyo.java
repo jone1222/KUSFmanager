@@ -28,7 +28,7 @@ import unitDatabase.Database;
 
 public class ciganpyo extends JPanel {
 	
-	timePanel show_schedule;
+	JPanel show_schedule;
 	JTable table;
 	
 	String []a = {"09:00 ~ 10:00", "10:00 ~ 11:00", "11:00 ~ 12:00", "12:00 ~ 13:00",
@@ -62,7 +62,7 @@ public class ciganpyo extends JPanel {
 		this.selectedRoom = main.getSelectedRoom();
 		init_Schedule(today);
 	}
-	public timePanel init_Schedule(String date) {
+	public JPanel init_Schedule(String date) {
 		//1. 모델과 데이터를 연결
 		
 		
@@ -90,6 +90,7 @@ public class ciganpyo extends JPanel {
 
 
 		show_schedule = new timePanel(this,date,table);
+		show_schedule = this;
 		show_schedule.setLayout(new BorderLayout());
 		show_schedule.add(sc, BorderLayout.CENTER);
 		show_schedule.setVisible(true);
@@ -182,6 +183,9 @@ public class ciganpyo extends JPanel {
 		try {
 			ArrayList<Reservation> reserve_list = DB.getReserveByDate(room, cal.getDate());
 			reserved_cols.clear();
+			for(int i = 0 ; i < 8; i++) {
+				table.getModel().setValueAt("예약 가능", 0, i);
+			}
 			for(Reservation resv : reserve_list) {
 				int sCol = TimetoColumn(Reservation.SDF_TIME.format(resv.getsTime()));
 				int eCol = TimetoColumn(Reservation.SDF_TIME.format(resv.geteTime()));
@@ -195,6 +199,8 @@ public class ciganpyo extends JPanel {
 		} catch (SQLException | ParseException e) {
 			e.printStackTrace();
 		}
+		table.repaint();
+		table.updateUI();
 		DB.close();
 	}
 	public int TimetoColumn(String time) {
@@ -274,7 +280,7 @@ public class ciganpyo extends JPanel {
 	        	}
 	        	else {
 	        		setBackground(Color.BLACK);
-	        		setForeground(Color.white);
+	        		setForeground(Color.WHITE);
 	        	}
 	        }
 	        this.setHorizontalAlignment(SwingConstants.CENTER);

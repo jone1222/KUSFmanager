@@ -148,7 +148,7 @@ public class Database {
 			return false;
 		}
 		try {
-			if (!findDuplicateReserv(date, sTime, eTime)) {
+			if (!findDuplicateReserv(rid,date, sTime, eTime)) {
 				if (checkReservationConstraint(users)) {
 					// INSERT INTO Reservation
 					String query = "INSERT INTO Reservation(rid,r_date,sTime,eTime) VALUES(" + rid + ",'" + date + "','"
@@ -192,11 +192,11 @@ public class Database {
 		return true;
 	}
 
-	public boolean findDuplicateReserv(String r_date, String sTime, String eTime) throws SQLException {
+	public boolean findDuplicateReserv(int rid,String r_date, String sTime, String eTime) throws SQLException {
 		if (this.isOpened == false) {
 			return true;
 		}
-		String find_duplicates = "SELECT * FROM Reservation WHERE r_date='" + r_date + "' and ( (sTime > '" + sTime
+		String find_duplicates = "SELECT * FROM Reservation WHERE rid = "+rid+" and r_date='" + r_date + "' and ( (sTime > '" + sTime
 				+ "' and sTime < '" + eTime + "') or (eTime > '" + sTime + "' and eTime < '" + eTime + "') )";
 		PreparedStatement prep = this.connection.prepareStatement(find_duplicates);
 

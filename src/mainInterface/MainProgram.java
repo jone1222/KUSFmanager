@@ -85,7 +85,7 @@ public class MainProgram extends JFrame implements ActionListener {
 	private Database DB;
 
 	calendar cal;
-	ciganpyo cig;
+	public ciganpyo cig;
 	
 	public String loginUserID;
 	public String loginUserPW;
@@ -149,6 +149,8 @@ public class MainProgram extends JFrame implements ActionListener {
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() == nextBtn) {
+			if(m_selectedroom.length() > 0)
+				cig.loadData(m_selectedroom);
 			if (getTopCard().equals("timeCard")) {
 				for(int i = 0 ; i < id_textField.length; i++) {
 					try {
@@ -366,7 +368,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		
 		timeCard = new JPanel(new GridLayout(3, 1));
 
-		cal = new calendar(timeCard);
+		cal = new calendar(timeCard,this);
 		cig = new ciganpyo(cal,this);
 		
 //		timeCard.add(cal.getcal1());

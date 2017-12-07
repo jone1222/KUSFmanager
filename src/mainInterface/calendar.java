@@ -22,6 +22,8 @@ class CalendarDataManager extends JPanel { // 6*7배열에 나타낼 달력 값을 구하는 
 	Calendar today = Calendar.getInstance();
 	Calendar cal;
 
+	MainProgram main;
+	
 	private String getTime[] = { "1시간", "2시간", "3시간", "4시간" }; // 몇시간 사용할지 선택
 	JComboBox<String> combo = new JComboBox<String>(getTime);
 
@@ -172,8 +174,9 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 		return frameSubPanelWest;
 	}
 
-	public calendar(JPanel topParent) { // 구성요소 순으로 정렬되어 있음. 각 판넬 사이에 빈줄로 구별
+	public calendar(JPanel topParent,MainProgram main) { // 구성요소 순으로 정렬되어 있음. 각 판넬 사이에 빈줄로 구별
 
+		this.main = main;
 		this.topParent = topParent;
 
 		mainFrame = new JFrame(title);
@@ -534,25 +537,7 @@ public class calendar extends CalendarDataManager { // CalendarDataManager의 GUI
 
 			getDate();
 			
-			if (topParent != null) {
-				Component[] child_comps = topParent.getComponents();
-				for (int i = 0; i < child_comps.length; i++) {
-					if (child_comps[i].getName().equals("timePart")) {
-						{
-							JPanel timePart = (JPanel) child_comps[i];
-							Component[] child_timePart = timePart.getComponents();
-							for (int j = 0; j < child_timePart.length; j++) {
-								if (child_timePart[j].getName().equals("schedule")) {
-									System.out.println(child_timePart[j] instanceof ciganpyo.timePanel);
-									System.out.println(child_timePart[j].getName());
-									
-									((timePanel)child_timePart[j]).updateTimeTable(userTime,new String[][] {{"0","0","0","0","0","0","0","0","0"}});
-								}
-							}
-						}
-					}
-				}
-			}
+			main.cig.loadData(main.getSelectedRoom());
 
 
 			cal = new GregorianCalendar(calYear, calMonth, calDayOfMon);

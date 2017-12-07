@@ -127,6 +127,7 @@ public class ReservePanel extends JPanel{
 						m.tabbedPane.setSelectedIndex(0);
 						m.loginUserID = null;
 						m.loginUserPW = null;
+
 					}
 				});
 			}
@@ -182,8 +183,7 @@ public class ReservePanel extends JPanel{
 	void updateTable(String sid) {
 		
 		reserve_list = new ArrayList<>();
-		for(int i = 0 ; i < tableModel.getRowCount(); i++)
-			tableModel.removeRow(i);
+		tableModel.setRowCount(0);
 		
 		Database DB = new Database();
 		DB.open();

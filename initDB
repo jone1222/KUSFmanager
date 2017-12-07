@@ -226,5 +226,10 @@ UPDATE Room SET Description = '다양한 프로젝트를 수행할 수 있는 실습실입니다.
 발표를 위한 모니터와 빔 프로젝터가 구비되어 있습니다. 
 최대 7명의 인원이 수용 가능합니다.' WHERE rName like '%설계실%'
 
+SELECT * FROM USER;
+INSERT INTO USER VALUES('201511200','1234','손예은')
+INSERT INTO USER VALUES('201311218','1234','송호용')
 
-
+SELECT * FROM Reservation;
+DELETE FROM Reservation;
+DELETE FROM ReservedUser;
