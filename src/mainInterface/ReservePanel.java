@@ -4,12 +4,15 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -18,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -32,7 +36,7 @@ public class ReservePanel extends JPanel{
 	
 	BorderLayout Border;
 	
-	JPanel userInfo, reserveInfo, reserveDetail, reserveTables;
+	JPanel userInfo, reserveInfo, reserveDetail, reserveTables, reserveDetail_logout, reserveDetails;
 	
 	JTextField sidField, nameField;
 	
@@ -46,6 +50,10 @@ public class ReservePanel extends JPanel{
 	ArrayList<Reservation> reserve_list;
 	
 	JLabel label1;
+	
+	JButton logoutBtn;
+	
+	MainProgram m;
 	
 	public ReservePanel() {
 		super();
@@ -94,12 +102,37 @@ public class ReservePanel extends JPanel{
 		
 		reserveTables = new JPanel(new GridLayout(2,1));
 		
+		reserveDetails = new JPanel(new BorderLayout());
 		reserveDetail = new JPanel(new BorderLayout());
+		reserveDetail_logout = new JPanel();
 		//reserveDetail.setBackground(Color.BLUE);
 		detailText = new JTextArea();
+		
+		reserveDetails.add(reserveDetail, BorderLayout.CENTER);
+		reserveDetails.add(reserveDetail_logout, BorderLayout.SOUTH);
 
 		reserveDetail.add(detailText);
 		
+		logoutBtn = new JButton("로그아웃");
+		logoutBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						m.tabbedPane.setEnabledAt(0, true);
+						m.tabbedPane.setEnabledAt(1, false);
+						m.tabbedPane.setEnabledAt(2, false);
+						m.tabbedPane.setSelectedIndex(0);
+						m.loginUserID = null;
+						m.loginUserPW = null;
+					}
+				});
+			}
+			
+		});
+		reserveDetail_logout.add(logoutBtn);
 		
 		tableModel = new DefaultTableModel(new String[] { "대여 공간명", "예약 날짜", "시작 시간", "종료 시간" },0) {
 			@Override
@@ -136,11 +169,14 @@ public class ReservePanel extends JPanel{
 		reserveDetail.setBorder(new TitledBorder(new LineBorder(Color.BLACK,2),"상세 정보"));
 		
 		//JScrollPane scrollTables = new JScrollPane(reserveTables,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JScrollPane scrollDetail =new JScrollPane(reserveDetail,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollDetail =new JScrollPane(reserveDetails,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		reserveInfo.add(reserveTables);
 		reserveInfo.add(scrollDetail);
-		
+	}
+	
+	void getMP(MainProgram m) {
+		this.m = m;
 	}
 	
 	void updateTable(String sid) {

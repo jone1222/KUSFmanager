@@ -55,7 +55,8 @@ public class MainProgram extends JFrame implements ActionListener {
 	private JFrame frm;
 
 	public JTabbedPane tabbedPane;
-	private JPanel mainPanel, userPanel;
+	private JPanel mainPanel;
+	private ReservePanel userPanel;
 
 	private CardLayout card;
 
@@ -108,6 +109,7 @@ public class MainProgram extends JFrame implements ActionListener {
 		tabbedPane.setUI(new UI());
 		
 		userPanel = new ReservePanel();
+		userPanel.getMP(this);
 		mainPanel = new JPanel(new BorderLayout());
 
 		initReservePanel();
