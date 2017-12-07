@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.sql.SQLException;
@@ -19,6 +21,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -48,6 +51,8 @@ public class ReservePanel extends JPanel{
 	JLabel label1;
 	
 	JButton logoutBtn;
+	
+	MainProgram m;
 	
 	public ReservePanel() {
 		super();
@@ -104,6 +109,24 @@ public class ReservePanel extends JPanel{
 		reserveDetail.add(detailText);
 		
 		logoutBtn = new JButton("로그아웃");
+		logoutBtn.addActionListener(new ActionListener() {
+
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				// TODO Auto-generated method stub
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						m.tabbedPane.setEnabledAt(0, true);
+						m.tabbedPane.setEnabledAt(1, false);
+						m.tabbedPane.setEnabledAt(2, false);
+						m.tabbedPane.setSelectedIndex(0);
+						m.loginUserID = null;
+						m.loginUserPW = null;
+					}
+				});
+			}
+			
+		});
 		reserveDetail_logout.add(logoutBtn);
 		
 		tableModel = new DefaultTableModel(new String[] { "대여 공간명", "예약 날짜", "시작 시간", "종료 시간" },0) {
@@ -145,6 +168,10 @@ public class ReservePanel extends JPanel{
 
 		reserveInfo.add(reserveTables);
 		reserveInfo.add(scrollDetail);
+	}
+	
+	void getMP(MainProgram m) {
+		this.m = m;
 	}
 	
 	void updateTable(String sid) {
