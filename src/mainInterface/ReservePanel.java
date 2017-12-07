@@ -10,6 +10,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -31,7 +32,7 @@ public class ReservePanel extends JPanel{
 	
 	BorderLayout Border;
 	
-	JPanel userInfo, reserveInfo, reserveDetail, reserveTables;
+	JPanel userInfo, reserveInfo, reserveDetail, reserveTables, reserveDetail_logout, reserveDetails;
 	
 	JTextField sidField, nameField;
 	
@@ -45,6 +46,8 @@ public class ReservePanel extends JPanel{
 	ArrayList<Reservation> reserve_list;
 	
 	JLabel label1;
+	
+	JButton logoutBtn;
 	
 	public ReservePanel() {
 		super();
@@ -89,12 +92,19 @@ public class ReservePanel extends JPanel{
 		
 		reserveTables = new JPanel(new GridLayout(2,1));
 		
+		reserveDetails = new JPanel(new BorderLayout());
 		reserveDetail = new JPanel(new BorderLayout());
+		reserveDetail_logout = new JPanel();
 		//reserveDetail.setBackground(Color.BLUE);
 		detailText = new JTextArea();
+		
+		reserveDetails.add(reserveDetail, BorderLayout.CENTER);
+		reserveDetails.add(reserveDetail_logout, BorderLayout.SOUTH);
 
 		reserveDetail.add(detailText);
 		
+		logoutBtn = new JButton("로그아웃");
+		reserveDetail_logout.add(logoutBtn);
 		
 		tableModel = new DefaultTableModel(new String[] { "대여 공간명", "예약 날짜", "시작 시간", "종료 시간" },0) {
 			@Override
@@ -131,11 +141,10 @@ public class ReservePanel extends JPanel{
 		reserveDetail.setBorder(new TitledBorder(new LineBorder(Color.BLACK,2),"상세 정보"));
 		
 		//JScrollPane scrollTables = new JScrollPane(reserveTables,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
-		JScrollPane scrollDetail =new JScrollPane(reserveDetail,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+		JScrollPane scrollDetail =new JScrollPane(reserveDetails,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
 
 		reserveInfo.add(reserveTables);
 		reserveInfo.add(scrollDetail);
-		
 	}
 	
 	void updateTable(String sid) {
